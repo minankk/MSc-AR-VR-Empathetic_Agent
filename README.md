@@ -19,9 +19,9 @@ The central hypothesis of this work is that a **rule-based emotional model**, dr
 The core of this project is a rule-based system for activating specific facial expressions based on emotional cues.
 
 - **Core Logic**: The model processes transcribed speech, using pre-defined keywords as triggers for specific emotions.
-  
+
 - **Activation**: When a keyword is detected and an arousal threshold is met, the corresponding emotion is triggered, resulting in a quick facial reaction. This allows for moment-based expressiveness and supports layered micro-expressions.
-  
+
 - **Timecourse**: Reactions have a fixed decay duration (e.g., 1.5 seconds) to ensure they are believable and do not override the agent's base emotional state. An optional cool-down window is included to prevent "flickering" between expressions.
 
 ---
@@ -60,7 +60,7 @@ Before running the project, ensure you have the following:
 
 ### Project Setup
 
-1. **Clone the Repository**:  
+1. **Clone the Repository**:
    Use Git to clone the repository to your local machine:
    ```bash
    git clone https://github.com/minankk/MSc-AR-VR-Empathetic_Agent.git
