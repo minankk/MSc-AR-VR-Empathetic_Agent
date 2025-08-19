@@ -1,8 +1,8 @@
-Time,Emotion,Intensity,Duration
-0.09,Happiness,0.25,2.5
-0.17,Happiness,0.45,2.5
-0.24,Happiness,0.65,2.5
-0.34,Happiness,0.85,2.5
-0.41,Happiness,1.0,2.5
-0.44,Happiness,0.8,2.5
-0.52,Happiness,0.6,2.5
+time,emotion,intensity,duration
+0.09,Happiness,0.25,3
+0.17,Happiness,0.45,3
+0.24,Happiness,0.65,3
+0.34,Happiness,0.85,3
+0.41,Happiness,1.0,3
+0.44,Happiness,0.8,3
+0.52,Happiness,0.6,3

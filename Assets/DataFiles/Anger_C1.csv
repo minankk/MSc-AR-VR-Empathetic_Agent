@@ -1,8 +1,8 @@
-Time,Emotion,Intensity,Duration
-0.05,Neutral,0.1,1.5
-0.14,Neutral,0.1,1.5
-0.23,Anger,0.85,1.5
-0.31,Anger,1.0,1.5
-0.36,Anger,0.85,1.5
-0.42,Anger,0.75,1.5
-0.51,Anger,1.0,1.5
+time,emotion,intensity,duration
+0.05,Neutral,0.1,3
+0.14,Neutral,0.1,3
+0.23,Anger,0.85,3
+0.31,Anger,1.0,3
+0.36,Anger,0.85,3
+0.42,Anger,0.75,3
+0.51,Anger,1.0,3
