@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using System.Collections;
-
+using DG.Tweening;
+//using OVRSimpleJSON;
 
 /*
 - installling Newtonsoft Json Unity Package:     https://github.com/jilleJr/Newtonsoft.Json-for-Unity/wiki/Install-official-via-UPM
@@ -26,10 +27,8 @@ Contempt	12 + 14
 
 */
 
-public struct BoneRoation
-{
-    public BoneRoation(HumanBodyBones hbb, Vector3 vNeutral, Vector3 vRotation)
-    {
+public struct BoneRoation {
+    public BoneRoation(HumanBodyBones hbb, Vector3 vNeutral, Vector3 vRotation) {
         Bone = hbb;
         Neutral = vNeutral;
         Rotation = vRotation;
@@ -40,8 +39,8 @@ public struct BoneRoation
     public Vector3 Rotation { get; }
 }
 
-public class FaceController : MonoBehaviour
-{
+public class FaceController : MonoBehaviour {
+    
 
     public string FaceMeshName = "CC_Base_Body";
     public string mappingFile = "AU2BS-CC3+.json";
@@ -60,39 +59,30 @@ public class FaceController : MonoBehaviour
     Animator anim;
 
     Dictionary<HumanBodyBones, Vector3> dictBonesToRotate; // dictionary to hold temorary rotation values
+    List<Tuple<int, float>> lstIndexWeights = new List<Tuple<int, float>>();
+    SkinnedMeshRenderer skinnedMeshRendererFace;
 
-
-
-    public void Awake()
-    {
-        Debug.Log("mappingFile");
-        //strFaceMesh = "CC_Base_Body"; // CONST
-        Debug.Log(mappingFile);
-        string weightFile_filepath = Path.Combine(Application.dataPath, "FaceConfigs", weightFile);
-
-        if (System.IO.File.Exists(weightFile_filepath))
-        {
-            dictPADWeights = JsonConvert.DeserializeObject<Dictionary<string, List<float>>>(File.ReadAllText(weightFile_filepath));
+    private void Awake() {
+        Debug.Log("FaceController:Awake()");
+        try {
+            weightFile = weightFile.Replace(".json", "");
+            string strPADWeights = Resources.Load<TextAsset>(Path.Combine("FaceConfigs/", weightFile)).text;
+            dictPADWeights = JsonConvert.DeserializeObject<Dictionary<string, List<float>>>(strPADWeights);
+        } catch (Exception ex) {
+            DebugDisplay.Instance.AddText("ERROR loading Weight file resource: " + ex.ToString());
         }
-        else
-        {
-            Debug.LogError("Weight file \"" + weightFile_filepath + "\" does not exist");
+
+        try {
+            mappingFile = mappingFile.Replace(".json", "");
+            string strAUMapping = Resources.Load<TextAsset>(Path.Combine("FaceConfigs/", mappingFile)).text;
+            dictAU2Blendshapes = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(strAUMapping);
+        } catch (Exception ex) {
+            DebugDisplay.Instance.AddText("ERROR loading Blendshape mapping resouce: " + ex.ToString());
         }
+
 
         // This disctionary allows to tune the weight of the Blendshape e.g. dictAU2BlendshapeWeights.Add("au_10", new List<float> { 0.6f, 0.6f });
         dictAU2BlendshapeWeights = new Dictionary<string, List<float>>();
-
-        //string mappingFile = "AU2BS-CC3+.json";
-        string mappingFile_filepath = Path.Combine(Application.dataPath, "FaceConfigs", mappingFile);
-
-        if (System.IO.File.Exists(mappingFile_filepath))
-        {
-            dictAU2Blendshapes = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(File.ReadAllText(mappingFile_filepath));
-        }
-        else
-        {
-            Debug.LogError("AU to Blendshape mapping file \"" + mappingFile_filepath + "\" does not exist");
-        }
 
 
         // some corrections
@@ -116,17 +106,19 @@ public class FaceController : MonoBehaviour
             new BoneRoation(//"CC_Base_BoneRoot/CC_Base_Hip/CC_Base_Waist/CC_Base_Spine01/CC_Base_Spine02/CC_Base_NeckTwist01/CC_Base_NeckTwist02/CC_Base_Head/CC_Base_FacialBone/CC_Base_JawRoot", 
             HumanBodyBones.Jaw,
             new Vector3(0f, 0f, -90f),
-            new Vector3(-0f, 0f, -110f));
+            new Vector3(-0f, 0f, -95f)); // original: -110
         dictAU2BoneRotation.Add("26", br);
 
-        Debug.Log("dictBonesToRotate");
+
         dictBonesToRotate = new Dictionary<HumanBodyBones, Vector3>();
-        Debug.Log(dictBonesToRotate);
+
         anim = GetComponent<Animator>();
+
+        GameObject go = this.transform.Find(FaceMeshName).gameObject;
+        skinnedMeshRendererFace = go.GetComponent<SkinnedMeshRenderer>();
     }
 
-    private void Start()
-    {
+    private void Start() {
         // printBlendShapeNames(strFaceMesh);
         //setCategoricalEmotion("Happiness", 1.0f);
         //setCategoricalEmotion("Anger", 1.0f);
@@ -146,9 +138,8 @@ public class FaceController : MonoBehaviour
     /// <param name="pleasure"></param>
     /// <param name="arousal"></param>
     /// <param name="dominance"></param>
-    public void setPAD2AUNorm(float pleasure, float arousal, float dominance)
-    {
-        //        resetAUs();
+    public void setPAD2AUNorm(float pleasure, float arousal, float dominance) {
+//        resetAUs();
 
         //Debug.Log("------------");
         //Debug.Log(pleasure);
@@ -161,8 +152,7 @@ public class FaceController : MonoBehaviour
         //Debug.Log("pleasure: " + pleasure.ToString() + ", arousal: " + arousal.ToString() + ", dominance: " + dominance);
 
 
-        foreach (KeyValuePair<string, List<float>> entry in dictPADWeights)
-        {
+        foreach (KeyValuePair<string, List<float>> entry in dictPADWeights) {
             List<float> lstWeights = entry.Value;
             float p = pleasure * lstWeights[0];
             float a = arousal * lstWeights[1];
@@ -182,55 +172,61 @@ public class FaceController : MonoBehaviour
     }
 
 
-    public void setPAD2AUNorm(float pleasure, float arousal, float dominance, float timeIn, float timeHold, float timeOut)
-    {
+    public void setPAD2AUNorm(float pleasure, float arousal, float dominance, float timeIn, float timeHold, float timeOut) {
         //Debug.Log("setPAD2AUNorm p:" + pleasure.ToString() + ", a: " + arousal.ToString() + ", d: " + dominance.ToString() + " " + timeIn.ToString() + " " + timeHold.ToString() + " " + timeOut.ToString());
         //resetAUs();
         // new need to tween p, a, d separately
+
+        /* 
         LeanTween.value(gameObject, tweenPAD, new Vector3(0.5f, 0.5f, 0.5f), new Vector3(pleasure, arousal, dominance), timeIn).setEase(LeanTweenType.easeInExpo);
         LeanTween.value(gameObject, tweenPAD, new Vector3(pleasure, arousal, dominance), new Vector3(0.5f, 0.5f, 0.5f), timeOut).setDelay(timeHold).setEase(LeanTweenType.easeOutExpo);
+        */
+
+
+        /* NEEDS TESTING...*/
+        Vector3 v3pad = new Vector3(0.5f, 0.5f, 0.5f);
+        Sequence mySequence = DOTween.Sequence();
+        mySequence.Append(DOTween.To(() => v3pad, x => v3pad = x, new Vector3(pleasure, arousal, dominance), timeIn).SetEase(Ease.InExpo).OnUpdate(() => tweenPAD(v3pad)));
+        mySequence.AppendInterval(timeHold);
+        mySequence.Append(DOTween.To(() => v3pad, x => v3pad = x, new Vector3(0.5f, 0.5f, 0.5f), timeOut).SetEase(Ease.InExpo).OnUpdate(() => tweenPAD(v3pad)));
+
     }
 
-    public void setCategoricalEmotion(string strEmotionName, float fWeight)
-    {
-        // resetAUs()
-        //Debug.Log("Setting emotion 2 params: " + strEmotionName + " with weight: " + fWeight);
-
-        if (dictCategoricalEmotions.ContainsKey(strEmotionName))
-        {
+    public void setCategoricalEmotion(string strEmotionName, float fWeight) {
+        //Debug.LogWarning("FaceController::setCategoricalEmotion");
+        // resetAUs();
+        if (dictCategoricalEmotions.ContainsKey(strEmotionName)) {
             List<int> lstAUs = dictCategoricalEmotions[strEmotionName];
-            foreach (int AU in lstAUs)
-            {
-               // Debug.Log("SetAU");
+            foreach (int AU in lstAUs) {
                 setAU(AU.ToString(), "both", fWeight);
             }
         }
     }
 
-    public void ClearBoneRotations()
-    {
+    public void ClearBoneRotations(){
         dictBonesToRotate.Clear();
         resetAUs();
     }
 
-    public void setCategoricalEmotion(string strEmotionName, float fWeight, float timeIn, float timeHold, float timeOut)
-    {
-        //Debug.Log("setCategoricalEmotion " + strEmotionName + " " + fWeight.ToString() + " " + timeIn.ToString() + " " + timeHold.ToString() + " " + timeOut.ToString());
-        Debug.Log("Setting emotion 5 params: " + strEmotionName + " with weight: " + fWeight);
-
+    public void setCategoricalEmotion(string strEmotionName, float fWeight, float timeIn, float timeHold, float timeOut) {
+        Debug.LogWarning("setCategoricalEmotion " + strEmotionName + " " + fWeight.ToString() + " " + timeIn.ToString() + " " + timeHold.ToString() + " " + timeOut.ToString());
+        //LogManager.instance.WriteTimeStampedEntry("FaceController::setCategoricalEmotion:" + strEmotionName + ":" + fWeight.ToString() + ":" + timeIn.ToString() + ":" + timeHold.ToString() + ":" + timeOut.ToString());
         strCurrentEmotion = strEmotionName;
-        LeanTween.value(gameObject, tweenCategorical, 0.0f, fWeight, timeIn).setEase(LeanTweenType.easeOutExpo);
-        LeanTween.value(gameObject, tweenCategorical, fWeight, 0.0f, timeOut).setDelay(timeHold).setEase(LeanTweenType.easeOutExpo).setOnComplete(ClearBoneRotations);
-        //if (dictCategoricalEmotions.ContainsKey(strEmotionName))
-        //{
-        //    List<int> lstAUs = dictCategoricalEmotions[strEmotionName];
-        //    foreach (int AU in lstAUs)
-        //    {
-        //        Debug.Log("inloop");
-        //        Debug.Log(AU.ToString());
-        //        setAU(AU.ToString(), "both", fWeight);
-        //    }
-        //}
+        Sequence mySequence = DOTween.Sequence();
+        mySequence.Append(DOTween.To(tweenCategorical, 0.0f, fWeight, timeIn).SetEase(Ease.OutExpo));
+        mySequence.AppendInterval(timeHold);
+        mySequence.Append(DOTween.To(tweenCategorical, fWeight, 0.0f, timeIn).SetEase(Ease.OutExpo).OnComplete(ClearBoneRotations));
+    }
+
+    public void setCategoricalEmotion(string strEmotionName, float fWeight, float timeIn, float timeHold, float timeOut, float delay) {
+        //Debug.LogWarning("setCategoricalEmotion " + strEmotionName + " " + fWeight.ToString() + " " + timeIn.ToString() + " " + timeHold.ToString() + " " + timeOut.ToString());
+        //LogManager.instance.WriteTimeStampedEntry("FaceController::setCategoricalEmotion:" + strEmotionName + ":" + fWeight.ToString() + ":" + timeIn.ToString() + ":" + timeHold.ToString() + ":" + timeOut.ToString() + ":" + delay.ToString());
+        strCurrentEmotion = strEmotionName;
+        Sequence mySequence = DOTween.Sequence();
+        mySequence.Append(DOTween.To(tweenCategorical, 0.0f, fWeight, timeIn).SetEase(Ease.OutExpo));
+        mySequence.AppendInterval(timeHold);
+        mySequence.Append(DOTween.To(tweenCategorical, fWeight, 0.0f, timeIn).SetEase(Ease.OutExpo).OnComplete(ClearBoneRotations));
+        mySequence.PrependInterval(delay);
     }
 
 
@@ -240,8 +236,7 @@ public class FaceController : MonoBehaviour
     /// <param name="strAU"></param>
     /// <param name="strSide"></param>
     /// <param name="fWeight"></param>
-    public void setAU(string strAU, string strSide, float fWeight)
-    {
+    public void setAU(string strAU, string strSide, float fWeight) {
         //Debug.Log("CharCtrlFAU::setAU:" + strAU + ":" + strSide + ":" + fWeight);
 
         if (strSide.ToLower() == "both") { strSide = ""; }
@@ -250,37 +245,30 @@ public class FaceController : MonoBehaviour
         string strKey = strAU + strSideSuffix;
 
         List<string> lstBlendshapes = new List<string>();
-        if (dictAU2Blendshapes.ContainsKey(strKey))
-        {
+        if (dictAU2Blendshapes.ContainsKey(strKey)) {
             lstBlendshapes = dictAU2Blendshapes[strKey];
-        }
-        else
-        {
+        } else {
             // Debug.Log("CharCtrlFAU::setAU: AU " + strKey + " not found");
         }
 
         List<float> lstBlendshapeWeight = null;
-        if (dictAU2BlendshapeWeights.ContainsKey(strKey))
-        {
+        if (dictAU2BlendshapeWeights.ContainsKey(strKey)) {
             lstBlendshapeWeight = dictAU2BlendshapeWeights[strKey];
         }
 
         int ii = 0;
-        foreach (string ss in lstBlendshapes)
-        {
+        foreach (string ss in lstBlendshapes) {
             float w = fWeight;
 
-            if (lstBlendshapeWeight != null)
-            {
+            if (lstBlendshapeWeight != null) {
                 w *= lstBlendshapeWeight[ii];
             }
-            setMeshBlendshapeWeight(FaceMeshName, ss, w * 100.0f);
+            setMeshBlendshapeWeightCache(ss, w * 100.0f);
             ii++;
         }
 
         /* BONES */
-        if (dictAU2BoneRotation.ContainsKey(strKey))
-        {
+        if (dictAU2BoneRotation.ContainsKey(strKey)) {
             //Debug.Log("AU for Bone: " + strKey);
             BoneRoation br = dictAU2BoneRotation[strKey];
             Vector3 newRot = Vector3.Lerp(br.Neutral, br.Rotation, fWeight);
@@ -288,28 +276,12 @@ public class FaceController : MonoBehaviour
         }
     }
 
-    void OnAnimatorIK(int layerIndex)
-    {
-        /* work through the list of bones
-        The dictionary is cleared at the end of the tween cycle
-        */
-        //Debug.Log(" OnAnimatorIK");
-        if (anim == null)
-        {
-            // Handle the null case, perhaps by initializing or logging an error
-            Debug.Log("Null Found OnAnimatorIK-anim");
-            return;
-        }
-        if (dictBonesToRotate == null)
-        {
-            // Handle the null case, perhaps by initializing or logging an error
-            Debug.Log("Null Found OnAnimatorIK-dictBonesToRotate");
-            return;
-        }
+    void OnAnimatorIK(int layerIndex) {
+       /* work through the list of bones
+       The dictionary is cleared at the end of the tween cycle
+       */
 
-        //Debug.Log("layerIndex:", GetComponent<SkinnedMeshRenderer>().layerIndex);
-        foreach (KeyValuePair<HumanBodyBones, Vector3> bb in dictBonesToRotate)
-        {
+        foreach (KeyValuePair<HumanBodyBones, Vector3> bb in dictBonesToRotate){
             anim.SetBoneLocalRotation(bb.Key, Quaternion.Euler(bb.Value));
         }
 
@@ -317,57 +289,60 @@ public class FaceController : MonoBehaviour
 
 
 
-    public void resetAUs()
-    {
+    public void resetAUs() {
         /* we only reset the AUs, not all the Blenshapes to avoid interference with other Blendshape alterations */
-        foreach (KeyValuePair<string, List<string>> entry in dictAU2Blendshapes)
-        {
+        foreach (KeyValuePair<string, List<string>> entry in dictAU2Blendshapes) {
             List<string> lstBlendshapes = entry.Value;
-            foreach (string strBS in lstBlendshapes)
-            {
-                setMeshBlendshapeWeight(FaceMeshName, strBS, 0.0f);
+            foreach (string strBS in lstBlendshapes) {
+                setMeshBlendshapeWeightCache(strBS, 0.0f);
             }
         }
     }
 
 
-    private void tweenCategorical(float val)
-    {
+    private void tweenCategorical(float val) {
         //Debug.Log("tweened value:" + val);
         setCategoricalEmotion(strCurrentEmotion, val);
     }
 
 
-    private void tweenPAD(Vector3 vVal)
-    {
+     private void tweenPAD(Vector3 vVal) {
         //Debug.Log("tweened value:" + vVal);
         setPAD2AUNorm(vVal[0], vVal[1], vVal[2]);
     }
 
 
-    public void setMeshBlendshapeWeight(string strMesh, string strBlendshape, float fWeight)
-    {
+    public void setMeshBlendshapeWeight(string strBlendshape, float fWeight) {
         //Debug.Log("CharCtrlFAU::setMeshBlendshapeWeight:" + strMesh + ":" + strBlendshape + ":" + fWeight);
-
-        GameObject go = this.transform.Find(strMesh).gameObject;
-        SkinnedMeshRenderer skinnedMeshRenderer = go.GetComponent<SkinnedMeshRenderer>();
-        Mesh skinnedMesh = skinnedMeshRenderer.sharedMesh;
+        Mesh skinnedMesh = skinnedMeshRendererFace.sharedMesh;
         int index = skinnedMesh.GetBlendShapeIndex(strBlendshape);
-        if (index >= 0)
-        {
-            skinnedMeshRenderer.SetBlendShapeWeight(index, fWeight);
+        if (index >= 0) {
+            skinnedMeshRendererFace.SetBlendShapeWeight(index, fWeight);
         }
     }
 
-    public void resetMeshBlendshapeWeight(string strMesh)
-    {
-        GameObject go = this.transform.Find(strMesh).gameObject;
-        SkinnedMeshRenderer skinnedMeshRenderer = go.GetComponent<SkinnedMeshRenderer>();
-        Mesh skinnedMesh = skinnedMeshRenderer.sharedMesh;
+    /// <summary>
+    /// This function does not directly set the blendshape weights, but creates a list that is then iterated in LateUpdate. This is necessary when using Animancer AnimationControllers
+    /// </summary>
+    /// <param name="strMesh"></param>
+    /// <param name="strBlendshape"></param>
+    /// <param name="fWeight"></param>
+    public void setMeshBlendshapeWeightCache(string strBlendshape, float fWeight) {
+        //Debug.Log("CharCtrlFAU::setMeshBlendshapeWeightCache:" + strMesh + ":" + strBlendshape + ":" + fWeight);
+        Mesh skinnedMesh = skinnedMeshRendererFace.sharedMesh;
+        int index = skinnedMesh.GetBlendShapeIndex(strBlendshape);
+        if (index >= 0) {
+            skinnedMeshRendererFace.SetBlendShapeWeight(index, fWeight);
+            lstIndexWeights.Add(new Tuple<int, float>(index, fWeight));
+        }
+    }
 
-        for (int ii = 0; ii < skinnedMesh.blendShapeCount; ii++)
-        {
-            skinnedMeshRenderer.SetBlendShapeWeight(ii, 0);
+
+    public void resetMeshBlendshapeWeight() {
+        Mesh skinnedMesh = skinnedMeshRendererFace.sharedMesh;
+
+        for (int ii = 0; ii < skinnedMesh.blendShapeCount; ii++) {
+            skinnedMeshRendererFace.SetBlendShapeWeight(ii, 0);
         }
     }
 
@@ -375,24 +350,19 @@ public class FaceController : MonoBehaviour
     // Functions to explore the facial expressions
 
 
-    public void printdictAU2Blendshapes()
-    {
+    private void printdictAU2Blendshapes() {
         //resetAUs();
-        foreach (KeyValuePair<string, List<string>> entry in dictAU2Blendshapes)
-        {
+        foreach (KeyValuePair<string, List<string>> entry in dictAU2Blendshapes) {
             Debug.Log(entry.Key);
             List<string> lstBS = entry.Value;
-            foreach (string BS in lstBS)
-            {
+            foreach (string BS in lstBS) {
                 Debug.Log("\t" + BS);
             }
         }
     }
 
-    IEnumerator showAllAUs()
-    {
-        foreach (KeyValuePair<string, List<string>> entry in dictAU2Blendshapes)
-        {
+    IEnumerator showAllAUs() {
+        foreach (KeyValuePair<string, List<string>> entry in dictAU2Blendshapes) {
             string strAU = entry.Key;
             Debug.Log("AU: " + strAU);
             resetAUs();
@@ -404,15 +374,11 @@ public class FaceController : MonoBehaviour
         }
     }
 
-    public void printBlendShapeNames(string strMesh)
-    {
+    public void printBlendShapeNames(string strMesh) {
         string path = "Assets/Temp/" + this.name + "_Blendshapes.txt";
         StreamWriter writer = new StreamWriter(path, true);
-        GameObject go = this.transform.Find(strMesh).gameObject;
-        SkinnedMeshRenderer skinnedMeshRenderer = go.GetComponent<SkinnedMeshRenderer>();
-        Mesh skinnedMesh = skinnedMeshRenderer.sharedMesh;
-        for (int i = 0; i < skinnedMesh.blendShapeCount; i++)
-        {
+        Mesh skinnedMesh = skinnedMeshRendererFace.sharedMesh;
+        for (int i = 0; i < skinnedMesh.blendShapeCount; i++) {
             string s = skinnedMesh.GetBlendShapeName(i);
             //            Debug.Log("Blend Shape: " + i + " " + s);
             //writer.WriteLine(s + "(" + i + ")");
@@ -421,14 +387,12 @@ public class FaceController : MonoBehaviour
         writer.Close();
     }
 
-    IEnumerator ScanPAD()
-    {
+    IEnumerator ScanPAD() {
         float a = 0f;
         float r = 1.0f; // Replace with the desired value for 'r'.
         float fDom = 1.0f; // Replace with the desired value for 'fDom'.
 
-        while (a < (2 * Math.PI))
-        {
+        while (a < (2 * Math.PI)) {
             double adeg = a * 180 / Math.PI;
             float fAro = Mathf.Sin(a) * r;
             float fPle = Mathf.Cos(a) * r;
@@ -441,14 +405,21 @@ public class FaceController : MonoBehaviour
         }
     }
 
-    IEnumerator ScanCategorical()
-    {
-        foreach (KeyValuePair<string, List<int>> cat in dictCategoricalEmotions)
-        {
+    IEnumerator ScanCategorical() {
+        foreach (KeyValuePair<string, List<int>> cat in dictCategoricalEmotions) {
             Debug.Log("Emotion: " + cat.Key);
             setCategoricalEmotion(cat.Key, 1.0f);
             yield return new WaitForSeconds(5);
         }
     }
+
+    private void LateUpdate() {
+        foreach (Tuple<int, float> tuple in lstIndexWeights) {
+            skinnedMeshRendererFace.SetBlendShapeWeight(tuple.Item1, tuple.Item2);
+
+        }
+
+    }
+
 }
 
