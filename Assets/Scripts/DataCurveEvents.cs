@@ -18,23 +18,38 @@ public class DataCurveEvents : MonoBehaviour
 
     private List<EmotionEvent> events = new();
 
-    void Start()
-    {
-        TryGetComponent(out faceController);
-        if (faceController == null)
-        {
-            Debug.LogError("FaceController missing!");
-            return;
-        }
-        if (eventFileAsset == null)
-        {
-            Debug.LogError("No event file assigned!");
-            return;
-        }
+  // test for broken facial expression and glitches
+  void Start()
+{
+    // First try on the same object
+    TryGetComponent(out faceController);
 
-        ParseCSV(eventFileAsset.text);
-        StartCoroutine(RunEvents());
+    // If not found, try in children or parent
+    if (faceController == null)
+        faceController = GetComponentInChildren<FaceController>();
+
+    if (faceController == null)
+        faceController = GetComponentInParent<FaceController>();
+
+    // As a last resort, search the scene
+    if (faceController == null)
+        faceController = FindObjectOfType<FaceController>();
+
+    if (faceController == null)
+    {
+        Debug.LogError("No FaceController found in scene! Make sure it's attached to CC_Base_Body.");
+        return;
     }
+
+    if (eventFileAsset == null)
+    {
+        Debug.LogError("No CSV file assigned to DataCurveEvents!");
+        return;
+    }
+
+    ParseCSV(eventFileAsset.text);
+    StartCoroutine(RunEvents());
+}
 
     void ParseCSV(string csvText)
     {
