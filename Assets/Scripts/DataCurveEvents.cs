@@ -1,92 +1,95 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
 
 public class DataCurveEvents : MonoBehaviour
 {
-    [SerializeField] TextAsset eventFileAsset;
+    [SerializeField] private TextAsset eventFileAsset;
     private FaceController faceController;
-    private Coroutine expressionRoutine;
 
-    void Start()
+    private class EmotionEvent
     {
-        // Hide skeleton and stabilize character
-        DisableSkeleton();
-        StabilizeCharacter();
-
-        // Get components
-        TryGetComponent(out faceController);
-
-        if (faceController == null)
-        {
-            Debug.LogError("FaceController missing!");
-            return;
-        }
-
-        if (eventFileAsset == null)
-        {
-            Debug.LogError("No event file assigned!");
-            return;
-        }
-
-        // Start expression playback
-        expressionRoutine = StartCoroutine(ParseAndTriggerEvents());
+        public float time;
+        public string emotion;
+        public float intensity;
+        public float duration;
     }
 
-    void DisableSkeleton()
+    private List<EmotionEvent> events = new();
+
+  // test for broken facial expression and glitches
+  void Start()
+{
+    // First try on the same object
+    TryGetComponent(out faceController);
+
+    // If not found, try in children or parent
+    if (faceController == null)
+        faceController = GetComponentInChildren<FaceController>();
+
+    if (faceController == null)
+        faceController = GetComponentInParent<FaceController>();
+
+    // As a last resort, search the scene
+    if (faceController == null)
+        faceController = FindObjectOfType<FaceController>();
+
+    if (faceController == null)
     {
-        foreach (var renderer in GetComponentsInChildren<Renderer>())
-        {
-            if (renderer.name.Contains("Armature") ||
-                renderer.name.Contains("Bone") ||
-                renderer.name.Contains("Root"))
-            {
-                renderer.enabled = false;
-            }
-        }
+        Debug.LogError("No FaceController found in scene! Make sure it's attached to CC_Base_Body.");
+        return;
     }
 
-    void StabilizeCharacter()
+    if (eventFileAsset == null)
     {
-        var rigidbody = GetComponent<Rigidbody>();
-        if (rigidbody != null)
-        {
-            rigidbody.isKinematic = true;
-        }
+        Debug.LogError("No CSV file assigned to DataCurveEvents!");
+        return;
     }
 
-    IEnumerator ParseAndTriggerEvents()
-    {
-        string[] lines = eventFileAsset.text.Split('\n');
+    ParseCSV(eventFileAsset.text);
+    StartCoroutine(RunEvents());
+}
 
-        for (int i = 1; i < lines.Length; i++) // Skip header
+    void ParseCSV(string csvText)
+    {
+        events.Clear();
+        string[] lines = csvText.Split('\n');
+
+        for (int i = 1; i < lines.Length; i++) // skip header
         {
             if (string.IsNullOrWhiteSpace(lines[i])) continue;
 
             string[] data = lines[i].Split(',');
             if (data.Length < 4) continue;
 
-            float triggerTime = float.Parse(data[0]);
+            float time = float.Parse(data[0], CultureInfo.InvariantCulture);
             string emotion = data[1].Trim();
-            float intensity = Mathf.Clamp01(float.Parse(data[2]));
-            float duration = float.Parse(data[3]);
+            float intensity = Mathf.Clamp01(float.Parse(data[2], CultureInfo.InvariantCulture));
+            float duration = float.Parse(data[3], CultureInfo.InvariantCulture);
 
-            yield return new WaitForSeconds(triggerTime);
-
-            faceController.setCategoricalEmotion(
-                emotion,
-                intensity,
-                0.8f,  // Smoother fade-in
-                duration,
-                0.8f   // Smoother fade-out
-            );
+            events.Add(new EmotionEvent { time = time, emotion = emotion, intensity = intensity, duration = duration });
         }
     }
 
-    void OnDisable()
+    IEnumerator RunEvents()
     {
-        if (expressionRoutine != null)
+        float startTime = Time.time;
+
+        foreach (var ev in events)
         {
-            StopCoroutine(expressionRoutine);
+            float waitTime = (startTime + ev.time) - Time.time;
+            if (waitTime > 0)
+                yield return new WaitForSeconds(waitTime);
+
+            // Smooth trigger for fade in and out
+            faceController.setCategoricalEmotion(
+                ev.emotion,
+                ev.intensity,
+                0.5f,     // fade in smoother
+                ev.duration,
+                0.5f      // fadeout smoother
+            );
         }
     }
 }
