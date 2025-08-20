@@ -212,7 +212,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 89f938c2367b7ba4caeb2ac18445e9ba,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.13999999
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 89f938c2367b7ba4caeb2ac18445e9ba,
         type: 3}
@@ -279,6 +279,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ccFemale04
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 89f938c2367b7ba4caeb2ac18445e9ba,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2296939745533547459, guid: 89f938c2367b7ba4caeb2ac18445e9ba,
         type: 3}
       propertyPath: m_Mesh
@@ -308,6 +313,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0.00027247114
+      objectReference: {fileID: 0}
+    - target: {fileID: 5197118176682910397, guid: 89f938c2367b7ba4caeb2ac18445e9ba,
+        type: 3}
+      propertyPath: m_BlendShapeWeights.Array.size
+      value: 68
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 89f938c2367b7ba4caeb2ac18445e9ba,
         type: 3}
@@ -339,6 +349,16 @@ PrefabInstance:
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8286684065680063800, guid: 89f938c2367b7ba4caeb2ac18445e9ba,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8286684065680063800, guid: 89f938c2367b7ba4caeb2ac18445e9ba,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.43
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -350,7 +370,11 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 695496877110125755}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 89f938c2367b7ba4caeb2ac18445e9ba,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1022156416308602338}
   m_SourcePrefab: {fileID: 100100000, guid: 89f938c2367b7ba4caeb2ac18445e9ba, type: 3}
 --- !u!4 &60605068518326943 stripped
 Transform:
@@ -382,6 +406,27 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 5674549081256824864}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &4756194294473698673 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 89f938c2367b7ba4caeb2ac18445e9ba,
+    type: 3}
+  m_PrefabInstance: {fileID: 5674549081256824864}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1022156416308602338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4756194294473698673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0812c26a4e8a8c94b820b3948b19cb5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FaceMeshName: CC_Base_Body
+  mappingFile: AU2BS-CC3+.json
+  weightFile: female_faces.json
 --- !u!4 &5281232724205008843 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 89f938c2367b7ba4caeb2ac18445e9ba,
