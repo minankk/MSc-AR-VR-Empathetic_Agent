@@ -16,7 +16,7 @@ using DG.Tweening;
 /*
 https://imotions.com/blog/learning/research-fundamentals/facial-action-coding-system/
 
-Categorical emotions: 
+Categorical emotions:
 Happiness 6 + 12
 Sadness	1 + 4 + 15
 Surprise	1 + 2 + 5 + 26
@@ -40,7 +40,7 @@ public struct BoneRoation {
 }
 
 public class FaceController : MonoBehaviour {
-    
+
 
     public string FaceMeshName = "CC_Base_Body";
     public string mappingFile = "AU2BS-CC3+.json";
@@ -50,7 +50,7 @@ public class FaceController : MonoBehaviour {
 
     Dictionary<string, List<string>> dictAU2Blendshapes; // Mapping Action Units to Blendshapes
     Dictionary<string, List<float>> dictAU2BlendshapeWeights; // Allows fine-tuning the weight of the mapping where necessary
-    Dictionary<string, List<float>> dictPADWeights; // Mapping of P, A, D to Action Unit 
+    Dictionary<string, List<float>> dictPADWeights; // Mapping of P, A, D to Action Unit
     Dictionary<string, List<int>> dictCategoricalEmotions; // Composition of categorical emotions from Action Units
 
     Dictionary<string, BoneRoation> dictAU2BoneRotation; // Mapping Action Units to Bones
@@ -103,7 +103,7 @@ public class FaceController : MonoBehaviour {
 
 
         BoneRoation br =
-            new BoneRoation(//"CC_Base_BoneRoot/CC_Base_Hip/CC_Base_Waist/CC_Base_Spine01/CC_Base_Spine02/CC_Base_NeckTwist01/CC_Base_NeckTwist02/CC_Base_Head/CC_Base_FacialBone/CC_Base_JawRoot", 
+            new BoneRoation(//"CC_Base_BoneRoot/CC_Base_Hip/CC_Base_Waist/CC_Base_Spine01/CC_Base_Spine02/CC_Base_NeckTwist01/CC_Base_NeckTwist02/CC_Base_Head/CC_Base_FacialBone/CC_Base_JawRoot",
             HumanBodyBones.Jaw,
             new Vector3(0f, 0f, -90f),
             new Vector3(-0f, 0f, -95f)); // original: -110
@@ -177,7 +177,7 @@ public class FaceController : MonoBehaviour {
         //resetAUs();
         // new need to tween p, a, d separately
 
-        /* 
+        /*
         LeanTween.value(gameObject, tweenPAD, new Vector3(0.5f, 0.5f, 0.5f), new Vector3(pleasure, arousal, dominance), timeIn).setEase(LeanTweenType.easeInExpo);
         LeanTween.value(gameObject, tweenPAD, new Vector3(pleasure, arousal, dominance), new Vector3(0.5f, 0.5f, 0.5f), timeOut).setDelay(timeHold).setEase(LeanTweenType.easeOutExpo);
         */
@@ -422,4 +422,3 @@ public class FaceController : MonoBehaviour {
     }
 
 }
-
