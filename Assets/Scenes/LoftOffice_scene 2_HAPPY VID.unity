@@ -11375,7 +11375,7 @@ PrefabInstance:
     - target: {fileID: 2759718345226950413, guid: 70b635d64464df24ba9f0583fd243a5d,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.3009999
+      value: -2.004
       objectReference: {fileID: 0}
     - target: {fileID: 2759718345226950413, guid: 70b635d64464df24ba9f0583fd243a5d,
         type: 3}
@@ -11385,7 +11385,7 @@ PrefabInstance:
     - target: {fileID: 2759718345226950413, guid: 70b635d64464df24ba9f0583fd243a5d,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.933
+      value: 1.831
       objectReference: {fileID: 0}
     - target: {fileID: 2759718345226950413, guid: 70b635d64464df24ba9f0583fd243a5d,
         type: 3}
@@ -14794,6 +14794,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1022156416308602338, guid: 4f3675130fc84f84eb0026c2cade6e1b,
+        type: 3}
+      propertyPath: mappingFile
+      value: AU2BS-CC3+Female04.json
+      objectReference: {fileID: 0}
     - target: {fileID: 2281805464315735473, guid: 4f3675130fc84f84eb0026c2cade6e1b,
         type: 3}
       propertyPath: m_Controller
