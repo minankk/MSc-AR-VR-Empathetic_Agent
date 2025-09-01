@@ -39,19 +39,19 @@ ModelImporter:
       name: ccMale04_SitChair_Idle_M_Motion
       takeName: 5786169016576_TempMotion
       internalID: -3621294292896091695
-      firstFrame: 65
-      lastFrame: 175
+      firstFrame: 74
+      lastFrame: 172
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
+      loopTime: 1
+      loopBlend: 1
       loopBlendOrientation: 0
       loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
+      loopBlendPositionXZ: 1
       keepOriginalOrientation: 0
       keepOriginalPositionY: 1
       keepOriginalPositionXZ: 0
