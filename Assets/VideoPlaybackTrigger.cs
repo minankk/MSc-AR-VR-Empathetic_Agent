@@ -40,7 +40,7 @@ public class VideoPlaybackTrigger : MonoBehaviour
     }
 
     //public void Awake() {
-    //    player = GetComponent<VideoPlayer>(); 
+    //    player = GetComponent<VideoPlayer>();
     //}
 
     private void OnTriggerEnter(Collider other)

@@ -1,101 +1,52 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Video;
 using UnityEngine.UI;
-using System.IO;
 using TMPro;
+using System.IO;
 
-public class SequenceManager : MonoBehaviour
+public class SimpleSequenceManager : MonoBehaviour
 {
-    [System.Serializable]
-    public class VideoSequence
-    {
-        public string sequenceName;
-        public VideoClip[] videos;
-        public string[] emotionalStates;
-    }
+    [Header("Video Player")]
+    public VideoPlayer videoPlayer; // Drag your VideoPlayer component here
 
-    [Header("Video Players")]
-    public VideoPlayer videoPlayerA;
-    public VideoPlayer videoPlayerB;
-    public VideoPlayer videoPlayerC;
+    [Header("Video Clips")]
+    public VideoClip happyVideo;
+    public VideoClip sadVideo;
+    public VideoClip angryVideo;
 
     [Header("UI Elements")]
     public Button startButton;
     public TextMeshProUGUI statusText;
 
-    [Header("Video Assignments")]
-    public VideoClip happyVideo;
-    public VideoClip sadVideo;
-    public VideoClip angryVideo;
-
-    [Header("Configuration")]
+    [Header("Settings")]
     public string sequenceFile = "video_sequence.txt";
+    public float delayBeforeStart = 1.0f;
     public float pauseBetweenVideos = 2.0f;
 
-    [Header("PC Testing Options")]
-    public bool enablePCTesting = true;
-    public KeyCode testStartKey = KeyCode.Space;
-    public KeyCode skipVideoKey = KeyCode.N;
-    public KeyCode pauseResumeKey = KeyCode.P;
-
-    private VideoClip[] videoClips;
-    private string[] emotionalStates;
+    private string[] videoOrder;
     private bool isPlaying = false;
-    private int currentVideoIndex = 0;
-    private Coroutine sequenceCoroutine;
 
     void Start()
     {
-        // Initialize video clips array
-        videoClips = new VideoClip[3] { happyVideo, sadVideo, angryVideo };
+        // Load the sequence from file
+        LoadSequenceFromFile();
 
-        // Setup button listener
+        // Setup button
         if (startButton != null)
         {
             startButton.onClick.AddListener(StartSequence);
-            startButton.interactable = true;
         }
 
-        // Load sequence from file
-        LoadSequenceFromFile();
-
-        // Set initial status
-        UpdateStatus("Ready. Press Start to play sequence.");
-
-        // Log testing instructions
-        if (enablePCTesting)
-        {
-            Debug.Log("PC Testing Enabled!");
-            Debug.Log("Press " + testStartKey + " to start sequence");
-            Debug.Log("Press " + skipVideoKey + " to skip current video");
-            Debug.Log("Press " + pauseResumeKey + " to pause/resume");
-        }
+        UpdateStatus("Ready. Press Start.");
     }
 
     void Update()
     {
-        // PC Testing controls
-        if (enablePCTesting)
+        // Simple PC testing - Space to start
+        if (Input.GetKeyDown(KeyCode.Space) && !isPlaying)
         {
-            // Start sequence with keyboard
-            if (Input.GetKeyDown(testStartKey) && !isPlaying)
-            {
-                StartSequence();
-            }
-
-            // Skip current video
-            if (Input.GetKeyDown(skipVideoKey) && isPlaying)
-            {
-                SkipCurrentVideo();
-            }
-
-            // Pause/Resume
-            if (Input.GetKeyDown(pauseResumeKey))
-            {
-                TogglePause();
-            }
+            StartSequence();
         }
     }
 
@@ -105,197 +56,96 @@ public class SequenceManager : MonoBehaviour
 
         if (File.Exists(filePath))
         {
-            string[] lines = File.ReadAllLines(filePath);
+            string sequence = File.ReadAllText(filePath).Trim().ToUpper();
 
-            if (lines.Length >= 1)
+            if (sequence.Length == 3)
             {
-                string sequence = lines[0].Trim().ToUpper();
-
-                if (sequence.Length == 3)
+                videoOrder = new string[3];
+                for (int i = 0; i < 3; i++)
                 {
-                    emotionalStates = new string[3];
-
-                    for (int i = 0; i < 3; i++)
-                    {
-                        switch (sequence[i])
-                        {
-                            case 'A':
-                                emotionalStates[i] = "Happy";
-                                break;
-                            case 'B':
-                                emotionalStates[i] = "Sad";
-                                break;
-                            case 'C':
-                                emotionalStates[i] = "Angry";
-                                break;
-                            default:
-                                emotionalStates[i] = "Unknown";
-                                break;
-                        }
-                    }
-
-                    Debug.Log("Loaded sequence: " + string.Join(" -> ", emotionalStates));
-                    return;
+                    videoOrder[i] = sequence[i].ToString();
                 }
+                Debug.Log("Loaded sequence: " + sequence);
+                return;
             }
         }
 
-        // Default sequence if file doesn't exist or is invalid
-        emotionalStates = new string[3] { "Happy", "Sad", "Angry" };
-        Debug.LogWarning("Using default sequence: Happy -> Sad -> Angry");
+        // Default fallback
+        videoOrder = new string[] { "A", "B", "C" };
+        Debug.Log("Using default sequence: ABC");
     }
 
     public void StartSequence()
     {
         if (!isPlaying)
         {
-            if (startButton != null)
-            {
-                startButton.interactable = false;
-            }
-
             isPlaying = true;
-            currentVideoIndex = 0;
-
-            sequenceCoroutine = StartCoroutine(PlaySequence());
+            startButton.interactable = false;
+            StartCoroutine(PlayVideoSequence());
         }
     }
 
-    IEnumerator PlaySequence()
+    IEnumerator PlayVideoSequence()
     {
-        while (currentVideoIndex < emotionalStates.Length)
-        {
-            string emotion = emotionalStates[currentVideoIndex];
-            VideoClip clipToPlay = null;
+        // Initial delay
+        UpdateStatus("Starting in " + delayBeforeStart + " seconds...");
+        yield return new WaitForSeconds(delayBeforeStart);
 
-            // Determine which clip to play based on emotion
-            switch (emotion)
-            {
-                case "Happy":
-                    clipToPlay = happyVideo;
-                    break;
-                case "Sad":
-                    clipToPlay = sadVideo;
-                    break;
-                case "Angry":
-                    clipToPlay = angryVideo;
-                    break;
-            }
+        // Play each video in sequence
+        foreach (string videoKey in videoOrder)
+        {
+            VideoClip clipToPlay = GetVideoClip(videoKey);
 
             if (clipToPlay != null)
             {
-                // Determine which video player to use
-                VideoPlayer activePlayer = null;
-                switch (currentVideoIndex % 3)
+                // Play the video
+                videoPlayer.clip = clipToPlay;
+                videoPlayer.Play();
+                UpdateStatus("Playing: " + GetEmotionName(videoKey));
+
+                // Wait for video to complete
+                yield return new WaitForSeconds((float)clipToPlay.length);
+
+                // Pause between videos (except after last one)
+                if (videoKey != videoOrder[videoOrder.Length - 1])
                 {
-                    case 0:
-                        activePlayer = videoPlayerA;
-                        break;
-                    case 1:
-                        activePlayer = videoPlayerB;
-                        break;
-                    case 2:
-                        activePlayer = videoPlayerC;
-                        break;
-                }
-
-                if (activePlayer != null)
-                {
-                    // Play the video
-                    activePlayer.clip = clipToPlay;
-                    UpdateStatus("Playing: " + emotion + " (Press N to skip)");
-                    activePlayer.Play();
-
-                    // Wait for the video to finish or skip
-                    float timer = 0;
-                    while (timer < clipToPlay.length && activePlayer.isPlaying)
-                    {
-                        timer += Time.deltaTime;
-                        yield return null;
-
-                        // Check for skip
-                        if (enablePCTesting && Input.GetKeyDown(skipVideoKey))
-                        {
-                            activePlayer.Stop();
-                            break;
-                        }
-                    }
-
-                    // Pause between videos
-                    if (currentVideoIndex < emotionalStates.Length - 1)
-                    {
-                        UpdateStatus("Pausing between videos... (Press N to continue)");
-
-                        float pauseTimer = 0;
-                        while (pauseTimer < pauseBetweenVideos)
-                        {
-                            pauseTimer += Time.deltaTime;
-                            yield return null;
-
-                            // Check for skip pause
-                            if (enablePCTesting && Input.GetKeyDown(skipVideoKey))
-                            {
-                                break;
-                            }
-                        }
-                    }
+                    UpdateStatus("Next video in " + pauseBetweenVideos + " seconds...");
+                    yield return new WaitForSeconds(pauseBetweenVideos);
                 }
             }
-
-            currentVideoIndex++;
         }
 
-        // Sequence finished
+        // Sequence complete
         CompleteSequence();
     }
 
-    void SkipCurrentVideo()
+    VideoClip GetVideoClip(string videoKey)
     {
-        // Stop current video and move to next
-        VideoPlayer[] players = { videoPlayerA, videoPlayerB, videoPlayerC };
-        foreach (var player in players)
+        switch (videoKey)
         {
-            if (player.isPlaying)
-            {
-                player.Stop();
-                break;
-            }
+            case "A": return happyVideo;
+            case "B": return sadVideo;
+            case "C": return angryVideo;
+            default: return null;
         }
     }
 
-    void TogglePause()
+    string GetEmotionName(string videoKey)
     {
-        if (!isPlaying) return;
-
-        VideoPlayer[] players = { videoPlayerA, videoPlayerB, videoPlayerC };
-        foreach (var player in players)
+        switch (videoKey)
         {
-            if (player.isPlaying || player.isPaused)
-            {
-                if (player.isPlaying)
-                {
-                    player.Pause();
-                    UpdateStatus("PAUSED - Press P to resume");
-                }
-                else
-                {
-                    player.Play();
-                    UpdateStatus("Resumed playing");
-                }
-                break;
-            }
+            case "A": return "Happy";
+            case "B": return "Sad";
+            case "C": return "Angry";
+            default: return "Unknown";
         }
     }
 
     void CompleteSequence()
     {
-        UpdateStatus("Sequence complete!");
         isPlaying = false;
-
-        if (startButton != null)
-        {
-            startButton.interactable = true;
-        }
+        startButton.interactable = true;
+        UpdateStatus("Sequence complete! Ready to start again.");
     }
 
     void UpdateStatus(string message)
@@ -304,25 +154,6 @@ public class SequenceManager : MonoBehaviour
         {
             statusText.text = message;
         }
-        Debug.Log("Status: " + message);
-    }
-
-    // For testing in editor
-    [ContextMenu("Test Sequence")]
-    void TestSequence()
-    {
-        if (!isPlaying)
-        {
-            StartSequence();
-        }
-    }
-
-    [ContextMenu("Skip Current Video")]
-    void EditorSkipVideo()
-    {
-        if (isPlaying)
-        {
-            SkipCurrentVideo();
-        }
+        Debug.Log(message);
     }
 }
