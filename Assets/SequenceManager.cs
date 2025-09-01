@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Video;
 using UnityEngine.UI;
 using System.IO;
+using TMPro; // Need this for TextMeshPro support
 
 public class SequenceManager : MonoBehaviour
 {
@@ -22,7 +23,7 @@ public class SequenceManager : MonoBehaviour
 
     [Header("UI Elements")]
     public Button startButton;
-    public Text statusText;
+    public TextMeshProUGUI statusText; // Changed to TextMeshProUGUI
 
     [Header("Video Assignments")]
     public VideoClip happyVideo;
@@ -44,14 +45,17 @@ public class SequenceManager : MonoBehaviour
         videoClips = new VideoClip[3] { happyVideo, sadVideo, angryVideo };
 
         // Setup button listener
-        startButton.onClick.AddListener(StartSequence);
-        startButton.interactable = true;
+        if (startButton != null)
+        {
+            startButton.onClick.AddListener(StartSequence);
+            startButton.interactable = true;
+        }
 
         // Load sequence from file
         LoadSequenceFromFile();
 
         // Set initial status
-        UpdateStatus("Ready. Press Start to play sequence.");
+        UpdateStatus("Press Start to begin.");
     }
 
     void LoadSequenceFromFile()
@@ -104,7 +108,11 @@ public class SequenceManager : MonoBehaviour
     {
         if (!isPlaying)
         {
-            startButton.interactable = false;
+            if (startButton != null)
+            {
+                startButton.interactable = false;
+            }
+
             isPlaying = true;
             currentVideoIndex = 0;
 
@@ -175,7 +183,11 @@ public class SequenceManager : MonoBehaviour
         // Sequence finished
         UpdateStatus("Sequence complete!");
         isPlaying = false;
-        startButton.interactable = true;
+
+        if (startButton != null)
+        {
+            startButton.interactable = true;
+        }
     }
 
     void UpdateStatus(string message)
