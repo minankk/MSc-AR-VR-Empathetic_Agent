@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Video;
 using UnityEngine.UI;
 using System.IO;
-using TMPro; // Need this for TextMeshPro support
+using TMPro;
 
 public class SequenceManager : MonoBehaviour
 {
@@ -23,7 +23,7 @@ public class SequenceManager : MonoBehaviour
 
     [Header("UI Elements")]
     public Button startButton;
-    public TextMeshProUGUI statusText; // Changed to TextMeshProUGUI
+    public TextMeshProUGUI statusText;
 
     [Header("Video Assignments")]
     public VideoClip happyVideo;
@@ -34,10 +34,17 @@ public class SequenceManager : MonoBehaviour
     public string sequenceFile = "video_sequence.txt";
     public float pauseBetweenVideos = 2.0f;
 
+    [Header("PC Testing Options")]
+    public bool enablePCTesting = true;
+    public KeyCode testStartKey = KeyCode.Space;
+    public KeyCode skipVideoKey = KeyCode.N;
+    public KeyCode pauseResumeKey = KeyCode.P;
+
     private VideoClip[] videoClips;
     private string[] emotionalStates;
     private bool isPlaying = false;
     private int currentVideoIndex = 0;
+    private Coroutine sequenceCoroutine;
 
     void Start()
     {
@@ -55,7 +62,41 @@ public class SequenceManager : MonoBehaviour
         LoadSequenceFromFile();
 
         // Set initial status
-        UpdateStatus("Press Start to begin.");
+        UpdateStatus("Ready. Press Start to play sequence.");
+
+        // Log testing instructions
+        if (enablePCTesting)
+        {
+            Debug.Log("PC Testing Enabled!");
+            Debug.Log("Press " + testStartKey + " to start sequence");
+            Debug.Log("Press " + skipVideoKey + " to skip current video");
+            Debug.Log("Press " + pauseResumeKey + " to pause/resume");
+        }
+    }
+
+    void Update()
+    {
+        // PC Testing controls
+        if (enablePCTesting)
+        {
+            // Start sequence with keyboard
+            if (Input.GetKeyDown(testStartKey) && !isPlaying)
+            {
+                StartSequence();
+            }
+
+            // Skip current video
+            if (Input.GetKeyDown(skipVideoKey) && isPlaying)
+            {
+                SkipCurrentVideo();
+            }
+
+            // Pause/Resume
+            if (Input.GetKeyDown(pauseResumeKey))
+            {
+                TogglePause();
+            }
+        }
     }
 
     void LoadSequenceFromFile()
@@ -116,7 +157,7 @@ public class SequenceManager : MonoBehaviour
             isPlaying = true;
             currentVideoIndex = 0;
 
-            StartCoroutine(PlaySequence());
+            sequenceCoroutine = StartCoroutine(PlaySequence());
         }
     }
 
@@ -162,17 +203,41 @@ public class SequenceManager : MonoBehaviour
                 {
                     // Play the video
                     activePlayer.clip = clipToPlay;
-                    UpdateStatus("Playing: " + emotion);
+                    UpdateStatus("Playing: " + emotion + " (Press N to skip)");
                     activePlayer.Play();
 
-                    // Wait for the video to finish
-                    yield return new WaitForSeconds((float)clipToPlay.length);
+                    // Wait for the video to finish or skip
+                    float timer = 0;
+                    while (timer < clipToPlay.length && activePlayer.isPlaying)
+                    {
+                        timer += Time.deltaTime;
+                        yield return null;
+
+                        // Check for skip
+                        if (enablePCTesting && Input.GetKeyDown(skipVideoKey))
+                        {
+                            activePlayer.Stop();
+                            break;
+                        }
+                    }
 
                     // Pause between videos
                     if (currentVideoIndex < emotionalStates.Length - 1)
                     {
-                        UpdateStatus("Pausing between videos...");
-                        yield return new WaitForSeconds(pauseBetweenVideos);
+                        UpdateStatus("Pausing between videos... (Press N to continue)");
+
+                        float pauseTimer = 0;
+                        while (pauseTimer < pauseBetweenVideos)
+                        {
+                            pauseTimer += Time.deltaTime;
+                            yield return null;
+
+                            // Check for skip pause
+                            if (enablePCTesting && Input.GetKeyDown(skipVideoKey))
+                            {
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -181,6 +246,49 @@ public class SequenceManager : MonoBehaviour
         }
 
         // Sequence finished
+        CompleteSequence();
+    }
+
+    void SkipCurrentVideo()
+    {
+        // Stop current video and move to next
+        VideoPlayer[] players = { videoPlayerA, videoPlayerB, videoPlayerC };
+        foreach (var player in players)
+        {
+            if (player.isPlaying)
+            {
+                player.Stop();
+                break;
+            }
+        }
+    }
+
+    void TogglePause()
+    {
+        if (!isPlaying) return;
+
+        VideoPlayer[] players = { videoPlayerA, videoPlayerB, videoPlayerC };
+        foreach (var player in players)
+        {
+            if (player.isPlaying || player.isPaused)
+            {
+                if (player.isPlaying)
+                {
+                    player.Pause();
+                    UpdateStatus("PAUSED - Press P to resume");
+                }
+                else
+                {
+                    player.Play();
+                    UpdateStatus("Resumed playing");
+                }
+                break;
+            }
+        }
+    }
+
+    void CompleteSequence()
+    {
         UpdateStatus("Sequence complete!");
         isPlaying = false;
 
@@ -196,7 +304,7 @@ public class SequenceManager : MonoBehaviour
         {
             statusText.text = message;
         }
-        Debug.Log(message);
+        Debug.Log("Status: " + message);
     }
 
     // For testing in editor
@@ -206,6 +314,15 @@ public class SequenceManager : MonoBehaviour
         if (!isPlaying)
         {
             StartSequence();
+        }
+    }
+
+    [ContextMenu("Skip Current Video")]
+    void EditorSkipVideo()
+    {
+        if (isPlaying)
+        {
+            SkipCurrentVideo();
         }
     }
 }
