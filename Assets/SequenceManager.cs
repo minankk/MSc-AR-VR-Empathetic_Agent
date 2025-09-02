@@ -8,7 +8,7 @@ using System.IO;
 public class SimpleSequenceManager : MonoBehaviour
 {
     [Header("Video Player")]
-    public VideoPlayer videoPlayer; // Drag your VideoPlayer component here
+    public VideoPlayer videoPlayer;
 
     [Header("Video Clips")]
     public VideoClip happyVideo;
@@ -48,6 +48,7 @@ public class SimpleSequenceManager : MonoBehaviour
         {
             StartSequence();
         }
+
     }
 
     void LoadSequenceFromFile()
@@ -75,16 +76,15 @@ public class SimpleSequenceManager : MonoBehaviour
         Debug.Log("Using default sequence: ABC");
     }
 
-    public void StartSequence()
+  public void StartSequence()
+{
+    if (!isPlaying)
     {
-        if (!isPlaying)
-        {
-            isPlaying = true;
-            startButton.interactable = false;
-            StartCoroutine(PlayVideoSequence());
-        }
+        isPlaying = true;
+        startButton.gameObject.SetActive(false);
+        StartCoroutine(PlayVideoSequence());
     }
-
+}
     IEnumerator PlayVideoSequence()
     {
         // Initial delay
@@ -142,12 +142,10 @@ public class SimpleSequenceManager : MonoBehaviour
     }
 
     void CompleteSequence()
-    {
-        isPlaying = false;
-        startButton.interactable = true;
-        UpdateStatus("Sequence complete! Ready to start again.");
-    }
-
+{
+    isPlaying = false;
+    UpdateStatus("Sequence complete! Please take off the headset and answer the quesstionare.");
+}
     void UpdateStatus(string message)
     {
         if (statusText != null)
