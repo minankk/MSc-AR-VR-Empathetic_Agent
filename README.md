@@ -76,7 +76,7 @@ Before running the project, ensure you have the following:
 2. Select **XR Plug-in Management** from the left sidebar.
 3. Under the **Android** tab, click the `+` icon and add the **Oculus XR Plug-in**.
 
-4. **Open the Main Scene**:
+4. **Open the LoftOffice_CONDITION_1_SKG OR/AND LoftOffice_CONDITION_2_DE**:
 
 1. In the **Project** window (usually at the bottom of the editor), navigate to `Assets/Scenes`.
 2. Double-click the **main scene** file to open it in the editor.
@@ -103,3 +103,4 @@ Before running the project, ensure you have the following:
 ### Licensing
 
 This project is licensed under the **MIT License**. For more details, see the `LICENSE.md` file in the repository.
+
