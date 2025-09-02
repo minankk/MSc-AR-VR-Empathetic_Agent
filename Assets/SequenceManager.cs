@@ -24,31 +24,43 @@ public class SimpleSequenceManager : MonoBehaviour
     public float delayBeforeStart = 1.0f;
     public float pauseBetweenVideos = 2.0f;
 
+    [Header("Testing Shortcuts")]
+    public KeyCode skipVideoKey = KeyCode.N;
+    public KeyCode skipAllKey = KeyCode.M;
+
     private string[] videoOrder;
     private bool isPlaying = false;
+    private Coroutine videoSequenceCoroutine;
+    private int currentVideoIndex = 0;
 
     void Start()
     {
-        // Load the sequence from file
         LoadSequenceFromFile();
 
-        // Setup button
         if (startButton != null)
         {
             startButton.onClick.AddListener(StartSequence);
         }
 
-        UpdateStatus("Ready. Press Start.");
+        UpdateStatus("VR experience ready. Press Start.");
     }
 
     void Update()
     {
-        // Simple PC testing - Space to start
         if (Input.GetKeyDown(KeyCode.Space) && !isPlaying)
         {
             StartSequence();
         }
 
+        if (Input.GetKeyDown(skipVideoKey) && isPlaying)
+        {
+            SkipCurrentVideo();
+        }
+
+        if (Input.GetKeyDown(skipAllKey) && isPlaying)
+        {
+            SkipAllVideos();
+        }
     }
 
     void LoadSequenceFromFile()
@@ -66,57 +78,107 @@ public class SimpleSequenceManager : MonoBehaviour
                 {
                     videoOrder[i] = sequence[i].ToString();
                 }
-                Debug.Log("Loaded sequence: " + sequence);
                 return;
             }
         }
 
-        // Default fallback
         videoOrder = new string[] { "A", "B", "C" };
-        Debug.Log("Using default sequence: ABC");
     }
 
-  public void StartSequence()
-{
-    if (!isPlaying)
+    public void StartSequence()
     {
-        isPlaying = true;
-        startButton.gameObject.SetActive(false);
-        StartCoroutine(PlayVideoSequence());
+        if (!isPlaying)
+        {
+            isPlaying = true;
+            currentVideoIndex = 0;
+            startButton.gameObject.SetActive(false);
+            videoSequenceCoroutine = StartCoroutine(PlayVideoSequence());
+        }
     }
-}
+
     IEnumerator PlayVideoSequence()
     {
-        // Initial delay
         UpdateStatus("Starting in " + delayBeforeStart + " seconds...");
         yield return new WaitForSeconds(delayBeforeStart);
 
-        // Play each video in sequence
-        foreach (string videoKey in videoOrder)
+        for (currentVideoIndex = 0; currentVideoIndex < videoOrder.Length; currentVideoIndex++)
         {
+            string videoKey = videoOrder[currentVideoIndex];
             VideoClip clipToPlay = GetVideoClip(videoKey);
 
             if (clipToPlay != null)
             {
-                // Play the video
+                // Stop any currently playing video first
+                if (videoPlayer.isPlaying)
+                {
+                    videoPlayer.Stop();
+                    yield return null; // Wait one frame
+                }
+
+                // Setup and play the new video
                 videoPlayer.clip = clipToPlay;
+                videoPlayer.Prepare();
+
+                // Wait for video to be ready
+                while (!videoPlayer.isPrepared)
+                {
+                    yield return null;
+                }
+
                 videoPlayer.Play();
-                UpdateStatus("Playing: " + GetEmotionName(videoKey));
+                UpdateStatus("Playing: " + GetEmotionName(videoKey) + " (" + (currentVideoIndex + 1) + "/3) ");
 
                 // Wait for video to complete
-                yield return new WaitForSeconds((float)clipToPlay.length);
+                float videoTimer = 0f;
+                while (videoTimer < clipToPlay.length && videoPlayer.isPlaying)
+                {
+                    videoTimer += Time.deltaTime;
+                    yield return null;
+                }
 
                 // Pause between videos (except after last one)
-                if (videoKey != videoOrder[videoOrder.Length - 1])
+                if (currentVideoIndex < videoOrder.Length - 1)
                 {
-                    UpdateStatus("Next video in " + pauseBetweenVideos + " seconds...");
-                    yield return new WaitForSeconds(pauseBetweenVideos);
+                    UpdateStatus("Next video in " + pauseBetweenVideos + " seconds... ");
+
+                    float pauseTimer = 0f;
+                    while (pauseTimer < pauseBetweenVideos)
+                    {
+                        pauseTimer += Time.deltaTime;
+                        yield return null;
+                    }
                 }
             }
         }
 
-        // Sequence complete
         CompleteSequence();
+    }
+
+    void SkipCurrentVideo()
+    {
+        if (isPlaying && videoPlayer.isPlaying)
+        {
+            videoPlayer.Stop();
+            Debug.Log("Skipped current video");
+            // The coroutine will continue naturally to the next video
+        }
+    }
+
+    void SkipAllVideos()
+    {
+        if (isPlaying)
+        {
+            if (videoSequenceCoroutine != null)
+            {
+                StopCoroutine(videoSequenceCoroutine);
+            }
+            if (videoPlayer.isPlaying)
+            {
+                videoPlayer.Stop();
+            }
+            CompleteSequence();
+            UpdateStatus("All videos skipped. Please take off the headset and answer the questionnaire.");
+        }
     }
 
     VideoClip GetVideoClip(string videoKey)
@@ -142,10 +204,11 @@ public class SimpleSequenceManager : MonoBehaviour
     }
 
     void CompleteSequence()
-{
-    isPlaying = false;
-    UpdateStatus("Sequence complete! Please take off the headset and answer the quesstionare.");
-}
+    {
+        isPlaying = false;
+        UpdateStatus("Sequence complete! Please take off the headset and answer the questionnaire.");
+    }
+
     void UpdateStatus(string message)
     {
         if (statusText != null)
