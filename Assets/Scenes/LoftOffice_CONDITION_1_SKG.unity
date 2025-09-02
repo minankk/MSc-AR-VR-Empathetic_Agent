@@ -4226,6 +4226,8 @@ MonoBehaviour:
   sequenceFile: video_sequence.txt
   delayBeforeStart: 1
   pauseBetweenVideos: 2
+  skipVideoKey: 110
+  skipAllKey: 109
 --- !u!1001 &336173104
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8034,6 +8036,39 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 787328072}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &816856605 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4756194294473698673, guid: 4f3675130fc84f84eb0026c2cade6e1b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1303927382}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &816856609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816856605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 032caa263c6298d4d83cfc5c1f1590e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  videoCSVPairs:
+  - videoClip: {fileID: 32900000, guid: fe534e1457bca4144880d3cc16186f9c, type: 3}
+    csvFile: {fileID: 4900000, guid: 5c99f6f851dd0414d98dcf4cbf63a8c7, type: 3}
+    emotionName: 
+  - videoClip: {fileID: 32900000, guid: 277cab9f44dbe4c77aeefde201abfa5d, type: 3}
+    csvFile: {fileID: 4900000, guid: f35cdec33c60840338c239cb661c769e, type: 3}
+    emotionName: 
+  - videoClip: {fileID: 32900000, guid: 6b7847b492091462ea4168441c586dde, type: 3}
+    csvFile: {fileID: 4900000, guid: e4b669eef0a4242e1a187fafd2940422, type: 3}
+    emotionName: 
+  videoPlayer: {fileID: 330577296}
+  startButton: {fileID: 0}
+  statusText: {fileID: 0}
+  delayBeforeStart: 1
+  pauseBetweenVideos: 2
 --- !u!1 &823211094
 GameObject:
   m_ObjectHideFlags: 0
@@ -15160,7 +15195,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4756194294473698673, guid: 4f3675130fc84f84eb0026c2cade6e1b,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 816856609}
   m_SourcePrefab: {fileID: 100100000, guid: 4f3675130fc84f84eb0026c2cade6e1b, type: 3}
 --- !u!1 &1306291923 stripped
 GameObject:
