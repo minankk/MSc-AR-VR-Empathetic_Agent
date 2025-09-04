@@ -24,7 +24,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Std_Skin_Head
-  m_Shader: {fileID: 4800000, guid: 48446a24d15aae84fbbd49864800ad77, type: 3}
+  m_Shader: {fileID: 4800000, guid: d8afc8854fab20d479cb729752651858, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -36,36 +36,30 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap:
-    MotionVector: User
-  disabledShaderPasses:
-  - TransparentDepthPrepass
-  - TransparentDepthPostpass
-  - TransparentBackface
-  - RayTracingPrepass
-  - MOTIONVECTORS
+  stringTagMap: {}
+  disabledShaderPasses: []
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 27cf01b9ddff30849a399cdb8027996e, type: 3}
+        m_Texture: {fileID: 2800000, guid: e2374df3342c58a4b832b6d7b531d1eb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 4d9579fd9a2ffa8418cf39248a3c8cd4, type: 3}
+        m_Texture: {fileID: 2800000, guid: 70dc1d6b2e518eb4fa8e2b7e89744d66, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailMask:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 5f6f15ff77a7e1c4b8d2a2961de488dd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailNormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: c6c4bfcdb921ed84297823cd4929b2cd, type: 3}
+        m_Scale: {x: 20, y: 20}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 2800000, guid: 0682c85d14dbe0243aff429fb8c1f7f9, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6dd88996b7bd7f146bda7783c060e485, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -74,6 +68,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SubsurfaceMaskMap:
+        m_Texture: {fileID: 2800000, guid: 9057fce4d6394c44a861868efc3af463, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ThicknessMap:
+        m_Texture: {fileID: 2800000, guid: 8abd2b5effd54524cbeefea75353b1cd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
@@ -96,19 +98,27 @@ Material:
     m_Floats:
     - _AlphaCutoff: 0.5
     - _BumpScale: 1
-    - _DetailNormalMapScale: 1
+    - _DetailNormalMapScale: 0.5
     - _EnvironmentReflections: 1
-    - _GlossMapScale: 0.897
     - _Metallic: 1
     - _OcclusionStrength: 1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _Smoothness: 0.7269399
     - _SpecularHighlights: 1
-    - _TessEdgeLength: 16
-    - _TessPhongStrength: 0.5
+    - _SubsurfaceMask: 0.85
+    - _Thickness: 1
+    - _TransAmbient: 0.1
+    - _TransDirect: 0.9
+    - _TransNormal: 0.95
+    - _TransScattering: 2
+    - _TransShadow: 0.5
+    - _TransStrength: 1.5
+    - _TransmissionShadow: 0.5
     m_Colors:
     - _BaseColor: {r: 0.7977377, g: 0.66518503, b: 0.5820884, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 0}
+    - _SubsurfaceFalloff: {r: 1, g: 0.37, b: 0.3, a: 1}
   m_BuildTextureStacks: []

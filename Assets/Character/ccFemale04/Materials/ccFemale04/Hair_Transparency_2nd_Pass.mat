@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Hair_Transparency_2nd_Pass
-  m_Shader: {fileID: 4800000, guid: 0b271f7c00cdc6b4cb64979cff408d9c, type: 3}
+  m_Shader: {fileID: 4800000, guid: a641ee34650e2134985a3f9b4ded71e7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -95,7 +95,7 @@ Material:
     - _AlphaClip2: 0.666
     - _AlphaCutoff: 0.5
     - _AlphaPower: 1
-    - _AlphaRemap: 0.75
+    - _AlphaRemap: 0.6
     - _BaseColorStrength: 1
     - _BlendStrength: 0
     - _ClipQuality: 1
@@ -126,8 +126,6 @@ Material:
     - _SpecularPowerScale: 4
     - _SpecularShiftMax: -0.124
     - _SpecularShiftMin: -0.204
-    - _TessEdgeLength: 16
-    - _TessPhongStrength: 0.5
     - _Translucency: 0.25
     - _VertexColorStrength: 0.846
     m_Colors:
