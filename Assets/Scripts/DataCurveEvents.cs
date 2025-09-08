@@ -2,9 +2,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using UnityEngine.Video; // ADD THIS LINE
-using UnityEngine.UI;    // ADD THIS LINE
-using TMPro;             // ADD THIS LINE
+using UnityEngine.Video;
+using UnityEngine.UI;
+using TMPro;
 
 public class DataCurveEvents : MonoBehaviour
 {

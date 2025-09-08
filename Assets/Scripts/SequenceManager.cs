@@ -36,13 +36,43 @@ public class SimpleSequenceManager : MonoBehaviour
     void Start()
     {
         LoadSequenceFromFile();
+        FindStartButton(); // NEW: Finds the button at runtime
+        UpdateStatus("VR experience ready. Press Start.");
+    }
+
+    void FindStartButton()
+    {
 
         if (startButton != null)
         {
             startButton.onClick.AddListener(StartSequence);
+            Debug.Log("Start button was pre-assigned in the inspector. Listener added.");
+            return;
         }
 
-        UpdateStatus("VR experience ready. Press Start.");
+        string[] possiblePaths = {
+            "StartButton",
+            "ControlCanvas/StartButton",
+            "UI/StartButton",
+            "Canvas/StartButton"
+        };
+
+        foreach (string path in possiblePaths)
+        {
+            GameObject buttonObj = GameObject.Find(path);
+            if (buttonObj != null)
+            {
+                startButton = buttonObj.GetComponent<Button>();
+                if (startButton != null)
+                {
+                    startButton.onClick.AddListener(StartSequence);
+                    Debug.Log($"Start button found at path: '{path}'. Listener added.");
+                    return;
+                }
+            }
+        }
+
+        Debug.LogError("Could not find the StartButton in the scene! Tried paths: " + string.Join(", ", possiblePaths));
     }
 
     void Update()
@@ -91,7 +121,14 @@ public class SimpleSequenceManager : MonoBehaviour
         {
             isPlaying = true;
             currentVideoIndex = 0;
-            startButton.gameObject.SetActive(false);
+            if (startButton != null)
+            {
+                startButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                Debug.LogWarning("StartSequence called but startButton is null!");
+            }
             videoSequenceCoroutine = StartCoroutine(PlayVideoSequence());
         }
     }
@@ -115,11 +152,11 @@ public class SimpleSequenceManager : MonoBehaviour
                     yield return null; // Wait one frame
                 }
 
-                // Setup and play the new video
+                // Setup and play the new vid
                 videoPlayer.clip = clipToPlay;
                 videoPlayer.Prepare();
 
-                // Wait for video to be ready
+                // Wait for vid to be ready
                 while (!videoPlayer.isPrepared)
                 {
                     yield return null;
@@ -128,7 +165,7 @@ public class SimpleSequenceManager : MonoBehaviour
                 videoPlayer.Play();
                 UpdateStatus("Playing: " + GetEmotionName(videoKey) + " (" + (currentVideoIndex + 1) + "/3) ");
 
-                // Wait for video to complete
+                // Wait for vid to complete
                 float videoTimer = 0f;
                 while (videoTimer < clipToPlay.length && videoPlayer.isPlaying)
                 {
@@ -136,7 +173,7 @@ public class SimpleSequenceManager : MonoBehaviour
                     yield return null;
                 }
 
-                // Pause between videos (except after last one)
+                // Pause between videos (except after last vid)
                 if (currentVideoIndex < videoOrder.Length - 1)
                 {
                     UpdateStatus("Next video in " + pauseBetweenVideos + " seconds... ");
