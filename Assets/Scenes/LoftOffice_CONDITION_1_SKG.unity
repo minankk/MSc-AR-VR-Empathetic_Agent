@@ -12996,7 +12996,7 @@ PrefabInstance:
     - target: {fileID: 1543366897688139493, guid: 56cc27f1c5450da4ebb0ff111856e3e2,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2171004025812290655, guid: 56cc27f1c5450da4ebb0ff111856e3e2,
         type: 3}
@@ -22260,7 +22260,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: bba2435ebaede8b4ca4e2f2c71592762,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: bba2435ebaede8b4ca4e2f2c71592762,
         type: 3}
@@ -27563,7 +27563,7 @@ PrefabInstance:
         type: 3}
       propertyPath: videoPlayer
       value: 
-      objectReference: {fileID: 1957749819}
+      objectReference: {fileID: 330577296}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -29817,8 +29817,8 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1725519744}
   m_LocalRotation: {x: -0, y: -0.5697165, z: -0, w: 0.8218413}
-  m_LocalPosition: {x: 0, y: 0, z: -0.651}
-  m_LocalScale: {x: 0.005, y: 0.005, z: 0.005}
+  m_LocalPosition: {x: 0, y: 0, z: -0.718}
+  m_LocalScale: {x: 0.0033520497, y: 0.0037469498, z: 0.005}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 999767624}
@@ -35408,7 +35408,7 @@ PrefabInstance:
     - target: {fileID: 1128561272939635142, guid: b24de4dfeab05144dbfed76b037b3c39,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -39152,9 +39152,9 @@ MonoBehaviour:
   - videoClip: {fileID: 32900000, guid: 6b7847b492091462ea4168441c586dde, type: 3}
     csvFile: {fileID: 4900000, guid: e4b669eef0a4242e1a187fafd2940422, type: 3}
     emotionName: 
-  videoPlayer: {fileID: 0}
-  startButton: {fileID: 0}
-  statusText: {fileID: 0}
+  videoPlayer: {fileID: 330577296}
+  startButton: {fileID: 999767625}
+  statusText: {fileID: 1905247923}
   delayBeforeStart: 1
   pauseBetweenVideos: 2
 --- !u!1001 &3768214750993049018
