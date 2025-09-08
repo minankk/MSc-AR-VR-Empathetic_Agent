@@ -578,7 +578,7 @@ PrefabInstance:
     - target: {fileID: 5801812844099710445, guid: 897a552cf2f8df344a2bb8782f434642,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.813
+      value: 0.778
       objectReference: {fileID: 0}
     - target: {fileID: 5801812844099710445, guid: 897a552cf2f8df344a2bb8782f434642,
         type: 3}
@@ -12996,7 +12996,7 @@ PrefabInstance:
     - target: {fileID: 1543366897688139493, guid: 56cc27f1c5450da4ebb0ff111856e3e2,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2171004025812290655, guid: 56cc27f1c5450da4ebb0ff111856e3e2,
         type: 3}
@@ -14650,7 +14650,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 999767626}
   m_OnClick:
     m_PersistentCalls:
@@ -22260,7 +22260,7 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: bba2435ebaede8b4ca4e2f2c71592762,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: bba2435ebaede8b4ca4e2f2c71592762,
         type: 3}
@@ -35408,7 +35408,7 @@ PrefabInstance:
     - target: {fileID: 1128561272939635142, guid: b24de4dfeab05144dbfed76b037b3c39,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -36959,7 +36959,7 @@ MonoBehaviour:
   useRecommendedMSAALevel: 1
   _monoscopic: 0
   _sharpenType: 0
-  _enableDynamicResolution: 0
+  _enableDynamicResolution: 1
   minDynamicResolutionScale: 1
   maxDynamicResolutionScale: 1
   quest2MinDynamicResolutionScale: 1
