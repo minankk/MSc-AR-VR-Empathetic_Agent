@@ -27564,6 +27564,54 @@ PrefabInstance:
       propertyPath: videoPlayer
       value: 
       objectReference: {fileID: 330577296}
+    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
+        type: 3}
+      propertyPath: videoCSVPairs.Array.data[0].csvFile
+      value: 
+      objectReference: {fileID: 4900000, guid: 5c99f6f851dd0414d98dcf4cbf63a8c7, type: 3}
+    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
+        type: 3}
+      propertyPath: videoCSVPairs.Array.data[1].csvFile
+      value: 
+      objectReference: {fileID: 4900000, guid: f35cdec33c60840338c239cb661c769e, type: 3}
+    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
+        type: 3}
+      propertyPath: videoCSVPairs.Array.data[2].csvFile
+      value: 
+      objectReference: {fileID: 4900000, guid: e4b669eef0a4242e1a187fafd2940422, type: 3}
+    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
+        type: 3}
+      propertyPath: videoCSVPairs.Array.data[0].videoClip
+      value: 
+      objectReference: {fileID: 32900000, guid: fe534e1457bca4144880d3cc16186f9c,
+        type: 3}
+    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
+        type: 3}
+      propertyPath: videoCSVPairs.Array.data[1].videoClip
+      value: 
+      objectReference: {fileID: 32900000, guid: 277cab9f44dbe4c77aeefde201abfa5d,
+        type: 3}
+    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
+        type: 3}
+      propertyPath: videoCSVPairs.Array.data[2].videoClip
+      value: 
+      objectReference: {fileID: 32900000, guid: 6b7847b492091462ea4168441c586dde,
+        type: 3}
+    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
+        type: 3}
+      propertyPath: videoCSVPairs.Array.data[0].emotionName
+      value: A
+      objectReference: {fileID: 0}
+    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
+        type: 3}
+      propertyPath: videoCSVPairs.Array.data[1].emotionName
+      value: B
+      objectReference: {fileID: 0}
+    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
+        type: 3}
+      propertyPath: videoCSVPairs.Array.data[2].emotionName
+      value: C
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
