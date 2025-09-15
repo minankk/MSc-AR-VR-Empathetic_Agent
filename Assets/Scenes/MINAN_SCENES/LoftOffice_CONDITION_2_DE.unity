@@ -5875,14 +5875,13 @@ MonoBehaviour:
   videoPlayer: {fileID: 330577296}
   happyVideo: {fileID: 32900000, guid: fe534e1457bca4144880d3cc16186f9c, type: 3}
   sadVideo: {fileID: 32900000, guid: 277cab9f44dbe4c77aeefde201abfa5d, type: 3}
-  angryVideo: {fileID: 32900000, guid: 6b7847b492091462ea4168441c586dde, type: 3}
+  surprisedVideo: {fileID: 32900000, guid: 097270755704f49879937c7819ca270b, type: 3}
   startButton: {fileID: 999767625}
   statusText: {fileID: 1905247923}
   sequenceFile: video_sequence.txt
   delayBeforeStart: 1
   pauseBetweenVideos: 2
-  skipVideoKey: 110
-  skipAllKey: 109
+  conditionSuffix: C2
 --- !u!1001 &336173104
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27578,17 +27577,17 @@ PrefabInstance:
         type: 3}
       propertyPath: videoCSVPairs.Array.data[0].csvFile
       value: 
-      objectReference: {fileID: 4900000, guid: 5c99f6f851dd0414d98dcf4cbf63a8c7, type: 3}
+      objectReference: {fileID: 4900000, guid: 8aa4df079e9d44d47ab05e8afb24f86b, type: 3}
     - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
       propertyPath: videoCSVPairs.Array.data[1].csvFile
       value: 
-      objectReference: {fileID: 4900000, guid: f35cdec33c60840338c239cb661c769e, type: 3}
+      objectReference: {fileID: 4900000, guid: f3aae6ba9ecf247638b9d40ac91c263f, type: 3}
     - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
       propertyPath: videoCSVPairs.Array.data[2].csvFile
       value: 
-      objectReference: {fileID: 4900000, guid: e4b669eef0a4242e1a187fafd2940422, type: 3}
+      objectReference: {fileID: 4900000, guid: 4a6af5c07b6864aa2a2974067fa5c628, type: 3}
     - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
       propertyPath: videoCSVPairs.Array.data[0].videoClip
@@ -27605,7 +27604,7 @@ PrefabInstance:
         type: 3}
       propertyPath: videoCSVPairs.Array.data[2].videoClip
       value: 
-      objectReference: {fileID: 32900000, guid: 6b7847b492091462ea4168441c586dde,
+      objectReference: {fileID: 32900000, guid: 097270755704f49879937c7819ca270b,
         type: 3}
     - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}

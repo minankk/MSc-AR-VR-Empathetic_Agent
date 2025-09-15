@@ -1,10 +1,10 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Video;
 using UnityEngine.UI;
 using TMPro;
 using System.IO;
-using System.Linq; // only used for convenience parsing but not required
 
 public class SimpleSequenceManager : MonoBehaviour
 {
@@ -14,32 +14,45 @@ public class SimpleSequenceManager : MonoBehaviour
     [Header("Video Clips")]
     public VideoClip happyVideo;
     public VideoClip sadVideo;
-    public VideoClip surprisedVideo; // assign this in the Inspector
+    public VideoClip surprisedVideo;
 
     [Header("UI Elements")]
     public Button startButton;
     public TextMeshProUGUI statusText;
 
     [Header("Settings")]
-    [Tooltip("Place a file named this inside your project's Assets folder (Application.dataPath). Format examples: \"ABC\" or \"A,B,C\"")]
-    public string sequenceFile = "video_sequence.txt";
+    public string sequenceFile = "video_sequence.txt";   // order of A/B/C
     public float delayBeforeStart = 1.0f;
     public float pauseBetweenVideos = 2.0f;
 
-    [Header("Testing Shortcuts")]
-    public KeyCode skipVideoKey = KeyCode.N;
-    public KeyCode skipAllKey = KeyCode.M;
+    [Header("Condition Settings")]
+    [Tooltip("Set this to C1 or C2 depending on the scene")]
+    public string conditionSuffix = "C1";
 
     private string[] videoOrder;
     private bool isPlaying = false;
     private Coroutine videoSequenceCoroutine;
     private int currentVideoIndex = 0;
 
+    // Lookup for CSV paths
+    private Dictionary<string, string> videoToCSV;
+
     void Start()
     {
+        BuildCSVMapping();
         LoadSequenceFromFile();
         FindStartButton();
         UpdateStatus("VR experience ready. Press Start.");
+    }
+
+    void BuildCSVMapping()
+    {
+        videoToCSV = new Dictionary<string, string>()
+        {
+            { "A", Path.Combine(Application.dataPath, $"DataFiles/Happy_{conditionSuffix}.csv") },
+            { "B", Path.Combine(Application.dataPath, $"DataFiles/Sad_{conditionSuffix}.csv") },
+            { "C", Path.Combine(Application.dataPath, $"DataFiles/Surprise_{conditionSuffix}.csv") }
+        };
     }
 
     void FindStartButton()
@@ -80,16 +93,6 @@ public class SimpleSequenceManager : MonoBehaviour
         {
             StartSequence();
         }
-
-        if (Input.GetKeyDown(skipVideoKey) && isPlaying)
-        {
-            SkipCurrentVideo();
-        }
-
-        if (Input.GetKeyDown(skipAllKey) && isPlaying)
-        {
-            SkipAllVideos();
-        }
     }
 
     void LoadSequenceFromFile()
@@ -98,31 +101,16 @@ public class SimpleSequenceManager : MonoBehaviour
 
         if (File.Exists(filePath))
         {
-            string raw = File.ReadAllText(filePath).Trim().ToUpper();
+            string sequence = File.ReadAllText(filePath).Trim().ToUpper();
 
-            // Accept formats: "ABC", "A,B,C", "A B C", etc.
-            if (raw.Contains(","))
+            videoOrder = new string[sequence.Length];
+            for (int i = 0; i < sequence.Length; i++)
             {
-                videoOrder = raw.Split(',').Select(s => s.Trim()).Where(s => s.Length > 0).ToArray();
-            }
-            else
-            {
-                // remove whitespace and split into single chars
-                raw = raw.Replace(" ", "");
-                videoOrder = new string[raw.Length];
-                for (int i = 0; i < raw.Length; i++)
-                    videoOrder[i] = raw[i].ToString();
-            }
-
-            if (videoOrder.Length == 0)
-            {
-                Debug.LogWarning("Sequence file parsed to zero entries; falling back to default ABC.");
-                videoOrder = new string[] { "A", "B", "C" };
+                videoOrder[i] = sequence[i].ToString();
             }
         }
         else
         {
-            Debug.LogWarning($"Sequence file not found at {filePath}. Using default A/B/C order.");
             videoOrder = new string[] { "A", "B", "C" };
         }
     }
@@ -150,27 +138,32 @@ public class SimpleSequenceManager : MonoBehaviour
         {
             string videoKey = videoOrder[currentVideoIndex];
             VideoClip clipToPlay = GetVideoClip(videoKey);
+            string csvPath = GetCSVFile(videoKey);
 
             if (clipToPlay != null)
             {
-                if (videoPlayer.isPlaying)
+                // Load facial expression data for this video
+                if (File.Exists(csvPath))
                 {
-                    videoPlayer.Stop();
-                    yield return null;
+                    string csvContent = File.ReadAllText(csvPath);
+                    Debug.Log($"Loaded CSV for {videoKey}: {csvPath}");
+                    // TODO: feed csvContent into face expression controller
+                }
+                else
+                {
+                    Debug.LogWarning($"CSV file not found: {csvPath}");
                 }
 
+                // Play video
                 videoPlayer.clip = clipToPlay;
                 videoPlayer.Prepare();
-
                 while (!videoPlayer.isPrepared)
                 {
                     yield return null;
                 }
 
                 videoPlayer.Play();
-
-                // Status shows only the video count (not emotion)
-                UpdateStatus($"Playing: video {currentVideoIndex + 1}/{videoOrder.Length}");
+                UpdateStatus($"Playing video {currentVideoIndex + 1}/{videoOrder.Length}");
 
                 float videoTimer = 0f;
                 while (videoTimer < clipToPlay.length && videoPlayer.isPlaying)
@@ -185,39 +178,9 @@ public class SimpleSequenceManager : MonoBehaviour
                     yield return new WaitForSeconds(pauseBetweenVideos);
                 }
             }
-            else
-            {
-                Debug.LogWarning($"No clip mapped for key '{videoKey}' - skipping.");
-            }
         }
 
         CompleteSequence();
-    }
-
-    void SkipCurrentVideo()
-    {
-        if (isPlaying && videoPlayer.isPlaying)
-        {
-            videoPlayer.Stop();
-            Debug.Log("Skipped current video");
-        }
-    }
-
-    void SkipAllVideos()
-    {
-        if (isPlaying)
-        {
-            if (videoSequenceCoroutine != null)
-            {
-                StopCoroutine(videoSequenceCoroutine);
-            }
-            if (videoPlayer.isPlaying)
-            {
-                videoPlayer.Stop();
-            }
-            CompleteSequence();
-            UpdateStatus("All videos skipped. Please take off the headset and answer the questionnaire.");
-        }
     }
 
     VideoClip GetVideoClip(string videoKey)
@@ -231,11 +194,19 @@ public class SimpleSequenceManager : MonoBehaviour
         }
     }
 
+    string GetCSVFile(string videoKey)
+    {
+        if (videoToCSV.ContainsKey(videoKey))
+        {
+            return videoToCSV[videoKey];
+        }
+        return null;
+    }
+
     void CompleteSequence()
     {
         isPlaying = false;
         UpdateStatus("Sequence complete! Please take off the headset and answer the questionnaire.");
-        if (startButton != null) startButton.gameObject.SetActive(true);
     }
 
     void UpdateStatus(string message)
