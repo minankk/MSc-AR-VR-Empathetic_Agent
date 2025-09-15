@@ -27551,6 +27551,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
+        type: 3}
       propertyPath: statusText
       value: 
       objectReference: {fileID: 1905247923}
@@ -27564,6 +27569,11 @@ PrefabInstance:
       propertyPath: videoPlayer
       value: 
       objectReference: {fileID: 330577296}
+    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
+        type: 3}
+      propertyPath: intensityMultiplier
+      value: 1.2
+      objectReference: {fileID: 0}
     - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
       propertyPath: videoCSVPairs.Array.data[0].csvFile
@@ -39205,6 +39215,7 @@ MonoBehaviour:
   statusText: {fileID: 1905247923}
   delayBeforeStart: 1
   pauseBetweenVideos: 2
+  intensityMultiplier: 1.5
 --- !u!1001 &3768214750993049018
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40982,7 +40993,6 @@ SceneRoots:
   - {fileID: 17182117}
   - {fileID: 917720952}
   - {fileID: 1632315500}
-  - {fileID: 149902024}
   - {fileID: 2011574180}
   - {fileID: 1247627372}
   - {fileID: 5674549082273434230}
@@ -40992,3 +41002,4 @@ SceneRoots:
   - {fileID: 2056602617}
   - {fileID: 1514611558}
   - {fileID: 1624173218}
+  - {fileID: 149902024}

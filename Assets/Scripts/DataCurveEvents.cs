@@ -29,6 +29,7 @@ public class DataCurveEvents : MonoBehaviour
     [Header("Settings")]
     public float delayBeforeStart = 1.0f;
     public float pauseBetweenVideos = 2.0f;
+    public float intensityMultiplier = 1.5f; // scale emotion strength globally
 
     private FaceController faceController;
     private List<EmotionEvent> currentEvents = new List<EmotionEvent>();
@@ -103,7 +104,7 @@ public class DataCurveEvents : MonoBehaviour
                 videoPlayer.Play();
                 UpdateStatus("Playing: " + pair.emotionName);
 
-                // Start expressions for this video
+                // Run emotion driver
                 Coroutine expressionCoroutine = StartCoroutine(RunEventsForCurrentVideo());
 
                 // Wait for video to complete
@@ -113,7 +114,7 @@ public class DataCurveEvents : MonoBehaviour
                 if (expressionCoroutine != null)
                     StopCoroutine(expressionCoroutine);
 
-                // Clear any remaining expressions
+                // Reset face
                 if (faceController != null)
                     faceController.ClearBoneRotations();
 
@@ -131,24 +132,30 @@ public class DataCurveEvents : MonoBehaviour
 
     IEnumerator RunEventsForCurrentVideo()
     {
-        float videoStartTime = Time.time;
+        double videoStartTime = videoPlayer.time;
 
-        foreach (var ev in currentEvents)
+        while (videoPlayer.isPlaying)
         {
-            float waitTime = (videoStartTime + ev.time) - Time.time;
-            if (waitTime > 0)
-                yield return new WaitForSeconds(waitTime);
+            double currentTime = videoPlayer.time - videoStartTime;
 
-            if (faceController != null)
+            foreach (var ev in currentEvents)
             {
-                faceController.setCategoricalEmotion(
-                    ev.emotion,
-                    ev.intensity,
-                    0.5f,     // fade in
-                    ev.duration,
-                    0.5f      // fade out
-                );
+                if (currentTime >= ev.time && currentTime <= ev.time + ev.duration)
+                {
+                    float progress = (float)((currentTime - ev.time) / ev.duration);
+
+                    // Smooth fade-in/out (0→1→0)
+                    float weight = Mathf.Sin(progress * Mathf.PI) * ev.intensity * intensityMultiplier;
+                    weight = Mathf.Clamp01(weight);
+
+                    if (faceController != null)
+                    {
+                        faceController.setCategoricalEmotion(ev.emotion, weight);
+                    }
+                }
             }
+
+            yield return null;
         }
     }
 
@@ -164,7 +171,7 @@ public class DataCurveEvents : MonoBehaviour
             string[] data = lines[i].Split(',');
             if (data.Length < 4) continue;
 
-            float time = float.Parse(data[0], CultureInfo.InvariantCulture);
+            float time = float.Parse(data[0], CultureInfo.InvariantCulture) * 100f;
             string emotion = data[1].Trim();
             float intensity = Mathf.Clamp01(float.Parse(data[2], CultureInfo.InvariantCulture));
             float duration = float.Parse(data[3], CultureInfo.InvariantCulture);
