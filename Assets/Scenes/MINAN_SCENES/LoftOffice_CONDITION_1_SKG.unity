@@ -27501,7 +27501,7 @@ PrefabInstance:
     - target: {fileID: 2204766368230014601, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 2204766368230014601, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
@@ -27568,6 +27568,11 @@ PrefabInstance:
       propertyPath: videoPlayer
       value: 
       objectReference: {fileID: 330577296}
+    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
+        type: 3}
+      propertyPath: pauseBetweenVideos
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
       propertyPath: intensityMultiplier

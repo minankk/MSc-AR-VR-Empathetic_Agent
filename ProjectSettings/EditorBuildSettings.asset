@@ -8,12 +8,15 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
-    path: Assets/Scenes/MINAN_SCENES/LoftOffice_CONDITION_1_SKG.unity
-    guid: 0f70b8a32ce36477ca000b3ab022d2f4
   - enabled: 0
     path: Assets/Scenes/Lab Environment VR.3 1.unity
     guid: 8e0363a2c0e77d9408ffe9a576dbd35a
+  - enabled: 0
+    path: Assets/Scenes/MINAN_SCENES/LoftOffice_CONDITION_1_SKG.unity
+    guid: 0f70b8a32ce36477ca000b3ab022d2f4
+  - enabled: 1
+    path: Assets/Scenes/MINAN_SCENES/LoftOffice_CONDITION_2_DE.unity
+    guid: cd7afe5b1ab754cf6bee3292a5c87d90
   m_configObjects:
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 652da991b9aa21249b74373af37a9cad,
       type: 2}
