@@ -27501,7 +27501,7 @@ PrefabInstance:
     - target: {fileID: 2204766368230014601, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.024
       objectReference: {fileID: 0}
     - target: {fileID: 2204766368230014601, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
@@ -27577,49 +27577,49 @@ PrefabInstance:
         type: 3}
       propertyPath: videoCSVPairs.Array.data[0].csvFile
       value: 
-      objectReference: {fileID: 4900000, guid: f3aae6ba9ecf247638b9d40ac91c263f, type: 3}
+      objectReference: {fileID: 4900000, guid: 8aa4df079e9d44d47ab05e8afb24f86b, type: 3}
     - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
       propertyPath: videoCSVPairs.Array.data[1].csvFile
       value: 
-      objectReference: {fileID: 4900000, guid: 4a6af5c07b6864aa2a2974067fa5c628, type: 3}
+      objectReference: {fileID: 4900000, guid: f3aae6ba9ecf247638b9d40ac91c263f, type: 3}
     - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
       propertyPath: videoCSVPairs.Array.data[2].csvFile
       value: 
-      objectReference: {fileID: 4900000, guid: 8aa4df079e9d44d47ab05e8afb24f86b, type: 3}
+      objectReference: {fileID: 4900000, guid: 4a6af5c07b6864aa2a2974067fa5c628, type: 3}
     - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
       propertyPath: videoCSVPairs.Array.data[0].videoClip
-      value: 
-      objectReference: {fileID: 32900000, guid: 277cab9f44dbe4c77aeefde201abfa5d,
-        type: 3}
-    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
-        type: 3}
-      propertyPath: videoCSVPairs.Array.data[1].videoClip
-      value: 
-      objectReference: {fileID: 32900000, guid: 097270755704f49879937c7819ca270b,
-        type: 3}
-    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
-        type: 3}
-      propertyPath: videoCSVPairs.Array.data[2].videoClip
       value: 
       objectReference: {fileID: 32900000, guid: fe534e1457bca4144880d3cc16186f9c,
         type: 3}
     - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
+      propertyPath: videoCSVPairs.Array.data[1].videoClip
+      value: 
+      objectReference: {fileID: 32900000, guid: 277cab9f44dbe4c77aeefde201abfa5d,
+        type: 3}
+    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
+        type: 3}
+      propertyPath: videoCSVPairs.Array.data[2].videoClip
+      value: 
+      objectReference: {fileID: 32900000, guid: 097270755704f49879937c7819ca270b,
+        type: 3}
+    - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
+        type: 3}
       propertyPath: videoCSVPairs.Array.data[0].emotionName
-      value: B
+      value: A
       objectReference: {fileID: 0}
     - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
       propertyPath: videoCSVPairs.Array.data[1].emotionName
-      value: C
+      value: B
       objectReference: {fileID: 0}
     - target: {fileID: 8609265473567931141, guid: 1ea592c9a7becc24e82ee25081840fde,
         type: 3}
       propertyPath: videoCSVPairs.Array.data[2].emotionName
-      value: A
+      value: C
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -39211,7 +39211,6 @@ MonoBehaviour:
     emotionName: 
   videoPlayer: {fileID: 330577296}
   startButton: {fileID: 999767625}
-  statusText: {fileID: 1905247923}
   delayBeforeStart: 1
   pauseBetweenVideos: 2
   intensityMultiplier: 1.5
