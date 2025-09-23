@@ -24,7 +24,7 @@ public class DataCurveEvents : MonoBehaviour
 
     [Header("UI Elements")]
     public Button startButton;
-    // public TextMeshProUGUI statusText;
+    public TextMeshProUGUI statusText;
 
     [Header("Settings")]
     public float delayBeforeStart = 1.0f;
@@ -44,17 +44,17 @@ public class DataCurveEvents : MonoBehaviour
         public float duration;
     }
 
-    // void Start()
-    // {
-    //     FindFaceController();
+    void Start()
+    {
+        FindFaceController();
 
-    //     if (startButton != null)
-    //     {
-    //         startButton.onClick.AddListener(StartVideoSequence);
-    //     }
+        if (startButton != null)
+        {
+            startButton.onClick.AddListener(StartVideoSequence);
+        }
 
-    //     UpdateStatus("Ready to start");
-    // }
+        UpdateStatus("VR experience ready. Press play to start");
+    }
 
     void FindFaceController()
     {
@@ -84,7 +84,7 @@ public class DataCurveEvents : MonoBehaviour
 
     IEnumerator PlayAllVideosWithExpressions()
     {
-        // UpdateStatus("Starting in " + delayBeforeStart + " seconds...");
+        UpdateStatus("Starting in " + delayBeforeStart + " seconds...");
         yield return new WaitForSeconds(delayBeforeStart);
 
         foreach (var pair in videoCSVPairs)
@@ -121,7 +121,7 @@ public class DataCurveEvents : MonoBehaviour
                 // Pause between videos (except after last one)
                 if (pair != videoCSVPairs[videoCSVPairs.Length - 1])
                 {
-                    // UpdateStatus("Next video in " + pauseBetweenVideos + " seconds...");
+                    UpdateStatus("Next video in " + pauseBetweenVideos + " seconds...");
                     yield return new WaitForSeconds(pauseBetweenVideos);
                 }
             }
@@ -189,17 +189,17 @@ public class DataCurveEvents : MonoBehaviour
     {
         isPlaying = false;
         startButton.gameObject.SetActive(true);
-        // UpdateStatus("Sequence complete! Please take off the headset.");
+        UpdateStatus("Sequence complete! Please take off the headset and answer the questionnaire.");
     }
 
-    // void UpdateStatus(string message)
-    // {
-    //     if (statusText != null)
-    //     {
-    //         statusText.text = message;
-    //     }
-    //     Debug.Log(message);
-    // }
+    void UpdateStatus(string message)
+    {
+        if (statusText != null)
+        {
+            statusText.text = message;
+        }
+        Debug.Log(message);
+    }
 
     // For testing
     void Update()

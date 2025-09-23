@@ -42,7 +42,7 @@ public class SimpleSequenceManager : MonoBehaviour
         BuildCSVMapping();
         LoadSequenceFromFile();
         FindStartButton();
-        UpdateStatus("VR experience ready. Press Start.");
+        UpdateStatus("VR experience ready. Press play to start");
     }
 
     void BuildCSVMapping()
