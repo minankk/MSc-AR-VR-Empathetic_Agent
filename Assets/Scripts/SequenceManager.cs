@@ -41,7 +41,7 @@ public class SimpleSequenceManager : MonoBehaviour
     {
         BuildCSVMapping();
         LoadSequenceFromFile();
-        FindStartButton();
+        //FindStartButton(); -> Add start as call back to the button
         UpdateStatus("VR experience ready. Press play to start");
     }
 
