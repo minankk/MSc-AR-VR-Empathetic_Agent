@@ -147,7 +147,7 @@ public class SimpleSequenceManager : MonoBehaviour
                 {
                     string csvContent = File.ReadAllText(csvPath);
                     Debug.Log($"Loaded CSV for {videoKey}: {csvPath}");
-                    // TODO: feed csvContent into face expression controller
+                    // TODO: feed csvContent into face expression controller > done via unity itself
                 }
                 else
                 {

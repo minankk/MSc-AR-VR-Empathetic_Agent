@@ -118,12 +118,12 @@ public class DataCurveEvents : MonoBehaviour
                 if (faceController != null)
                     faceController.ClearBoneRotations();
 
-                // Pause between videos (except after last one)
-                if (pair != videoCSVPairs[videoCSVPairs.Length - 1])
-                {
-                    UpdateStatus("Next video in " + pauseBetweenVideos + " seconds...");
-                    yield return new WaitForSeconds(pauseBetweenVideos);
-                }
+                // // Pause between videos (except after last one)
+                // if (pair != videoCSVPairs[videoCSVPairs.Length - 1])
+                // {
+                //     UpdateStatus("Next video in " + pauseBetweenVideos + " seconds...");
+                //     yield return new WaitForSeconds(pauseBetweenVideos);
+                // }
             }
         }
 
